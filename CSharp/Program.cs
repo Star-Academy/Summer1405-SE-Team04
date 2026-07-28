@@ -19,6 +19,7 @@ class Program
             {
                 case "SEARCH": {
                     backHistory.Push(tokens[1]);
+                    forwardHistory.Clear();
                     searches[tokens[1]] = searches.GetValueOrDefault(tokens[1], 0) + 1;
                     break;
                 }
