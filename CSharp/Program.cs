@@ -5,64 +5,54 @@ class Program
 {
     static void Main(string[] args)
     {
+        Strings.currentLanguage = "en";
+        var appStrings = Strings.Get();
         var historyManager = new HistoryManager();
         while (true)
         {
             var input = Console.ReadLine();
             var cmdParts = Regex.Split(input.Trim(), @"\s+").ToList();
-            switch (cmdParts[0])
+
+            if (cmdParts[0] == appStrings.Search)
             {
-                case "SEARCH":
-                    {
-                        historyManager.Search(cmdParts[1]);
-                        break;
-                    }
-
-                case "BACK":
-                    {
-                        if (!historyManager.Back())
-                            Console.WriteLine("No back history");
-                        break;
-                    }
-
-                case "FORWARD":
-                    {
-                        if (!historyManager.Forward())
-                            Console.WriteLine("No forward history");
-                        break;
-                    }
-
-                case "STATS":
-                    {
-                        var sortedEntries = historyManager.Stats(3);
-                        for (int i = 0; i < sortedEntries.Count; i++)
-                        {
-                            Console.WriteLine(sortedEntries[i].Key + " " + sortedEntries[i].Value);
-                        }
-                        break;
-                    }
-
-                case "UNIQUE":
-                    {
-                        Console.WriteLine(historyManager.Unique());
-                        break;
-                    }
-
-                case "EXIT":
-                    {
-                        return;
-                    }
+                historyManager.Search(cmdParts[1]);
+            }
+            else if (cmdParts[0] == appStrings.Back)
+            {
+                if (!historyManager.Back())
+                    Console.WriteLine(appStrings.NoBack);
+            }
+            else if (cmdParts[0] == appStrings.Forward)
+            {
+                if (!historyManager.Forward())
+                    Console.WriteLine(appStrings.NoForward);
+            }
+            else if (cmdParts[0] == appStrings.Stats)
+            {
+                var sortedEntries = historyManager.Stats(3);
+                for (int i = 0; i < sortedEntries.Count; i++)
+                {
+                    Console.WriteLine(sortedEntries[i].Key + " " + sortedEntries[i].Value);
+                }
+            }
+            else if (cmdParts[0] == appStrings.Unique)
+            {
+                Console.WriteLine(historyManager.Unique());
+            }
+            else if (cmdParts[0] == appStrings.Exit)
+            {
+                return;
             }
 
             var current = historyManager.CurrentPage();
             if (current == null)
             {
-                Console.WriteLine("No current page");
+                Console.WriteLine(appStrings.NoCurrent);
                 continue;
             }
             else
             {
-                Console.WriteLine("current: " + current);
+                Console.WriteLine(appStrings.Current + current);
             }
         }
     }
