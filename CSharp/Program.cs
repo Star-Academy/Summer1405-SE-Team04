@@ -1,88 +1,69 @@
 ﻿using System.Text.RegularExpressions;
+using G5;
+
 class Program
 {
     static void Main(string[] args)
     {
-        Stack<string> backHistory = new Stack<string>();
-        Stack<string> forwardHistory = new Stack<string>();
-
-        var searches = new Dictionary<string, int>();
-    
-
-        var tokens = new List<string>();
-        
+        var historyManager = new HistoryManager();
         while (true)
         {
-            string input = Console.ReadLine();
-            tokens = Regex.Split(input.Trim(), @"\s+").ToList();
-            switch (tokens[0])
+            var input = Console.ReadLine();
+            var cmdParts = Regex.Split(input.Trim(), @"\s+").ToList();
+            switch (cmdParts[0])
             {
-                case "SEARCH": {
-                    backHistory.Push(tokens[1]);
-                    forwardHistory.Clear();
-                    searches[tokens[1]] = searches.GetValueOrDefault(tokens[1], 0) + 1;
-                    break;
-                }
+                case "SEARCH":
+                    {
+                        historyManager.Search(cmdParts[1]);
+                        break;
+                    }
 
                 case "BACK":
-                {   
-                    if (backHistory.Count == 1)
                     {
-                        Console.WriteLine("No back history");
+                        if (!historyManager.Back())
+                            Console.WriteLine("No back history");
                         break;
                     }
-                    var temp = backHistory.Pop();
-                    forwardHistory.Push(temp);
-                    break;
-                    
-                }
 
                 case "FORWARD":
-                {
-                    if (forwardHistory.Count == 0)
                     {
-                        Console.WriteLine("No forward history");
+                        if (!historyManager.Forward())
+                            Console.WriteLine("No forward history");
                         break;
                     }
-                    var temp = forwardHistory.Pop();
-                    backHistory.Push(temp);
-                    break;
-                    
-                }
-                
+
                 case "STATS":
-                {
-                    var sortedSearches = searches.OrderBy(x => -x.Value).ToList();
-                    for (int i = 0; i < 3; i++)
                     {
-                        Console.WriteLine(sortedSearches[i].Key + " " + sortedSearches[i].Value);
+                        var sortedEntries = historyManager.Stats(3);
+                        for (int i = 0; i < sortedEntries.Count; i++)
+                        {
+                            Console.WriteLine(sortedEntries[i].Key + " " + sortedEntries[i].Value);
+                        }
+                        break;
                     }
-                    break;
-                }
 
                 case "UNIQUE":
-                {
-                    var uniqueSearches = searches.Keys.Count;
-                    Console.WriteLine(uniqueSearches);
-                    break;
-                }
+                    {
+                        Console.WriteLine(historyManager.Unique());
+                        break;
+                    }
+
                 case "EXIT":
-                {
-                    return;
-                }
+                    {
+                        return;
+                    }
             }
 
-            if (backHistory.Count == 0)
+            var current = historyManager.CurrentPage();
+            if (current == null)
             {
                 Console.WriteLine("No current page");
                 continue;
-            } else
-            {
-                string current = backHistory.Peek();
-                Console.WriteLine("current: " + current);
-
             }
-
+            else
+            {
+                Console.WriteLine("current: " + current);
+            }
         }
     }
 }
