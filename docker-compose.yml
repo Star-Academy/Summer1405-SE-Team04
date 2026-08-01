@@ -1,0 +1,27 @@
+services:
+  postgres:
+    image: hub.hamdocker.ir/library/postgres:16
+    container_name: mohaymen-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-mohaymen}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mohaymen}
+      POSTGRES_DB: ${POSTGRES_DB:-mohaymen}
+    ports:
+      - "5432:5432"
+    volumes:
+      - mohaymen-pgdata:/var/lib/postgresql/data
+
+  sqlserver:
+    image: mcr.hamdocker.ir/mssql/server:2022-latest
+    container_name: mohaymen-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+    ports:
+      - "1433:1433"
+    volumes:
+      - mohaymen-mssqldata:/var/opt/mssql
+
+volumes:
+  mohaymen-pgdata:
+  mohaymen-mssqldata:
