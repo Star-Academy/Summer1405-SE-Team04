@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/MainApp/MainApp.csproj" />
+    <Project Path="src/QueryBuilder/QueryBuilder.csproj" />
+  </Folder>
+</Solution>
