@@ -1,84 +1,71 @@
-using System.Security.Claims;
+using System.Text;
 using QueryBuilder;
 
-public interface Compiler
+public interface ICompiler
 {
     public (string Sql, List<object> Bindings) Compile(Query query);
 }
 
-public class PostgresCompiler : Compiler
+public abstract class Compiler : ICompiler
 {
     public (string Sql, List<object> Bindings) Compile(Query query)
     {
+        var sqlBuilder = new StringBuilder();
+        ValidateQuery(query);
         var bindings = new List<object>();
 
+        sqlBuilder.Append("SELECT ");
+        sqlBuilder.Append(string.Join(", ", query.SelectColumns.Select(c => WrapIndentifier(c))));
+
+        sqlBuilder.Append($" FROM {WrapIndentifier(query.FromTable)}");
+
+        if (query.WhereEntries.Count != 0)
+        {
+            sqlBuilder.Append(" WHERE ");
+            sqlBuilder.Append(string.Join(" AND ", query.WhereEntries.Select((entry, index) =>
+            {
+                bindings.Add(entry.value);
+                return $"{WrapIndentifier(entry.column)} = {FormatParameter(index)}";
+            })));
+        }
+        return (sqlBuilder.ToString(), bindings);
+    }
+
+    private void ValidateQuery(Query query)
+    {
         if (query.SelectColumns.Count == 0)
             throw new ArgumentException("no column");
         if (query.FromTable.Length == 0)
             throw new ArgumentException("no from table");
+    }
+    protected abstract string WrapIndentifier(string identifier);
+    protected abstract string FormatParameter(int index);
 
-        string sql = "SELECT ";
-        for (int i = 0; i < query.SelectColumns.Count; ++i)
-        {
-            sql += $"\"{query.SelectColumns[i]}\"";
-            if (i != query.SelectColumns.Count - 1)
-                sql += ", ";
-        }
+}
 
-        sql += $" FROM \"{query.FromTable}\"";
+public class PostgresCompiler : Compiler
+{
+    protected override string FormatParameter(int index)
+    {
+        return $"${index + 1}";
+    }
 
-        if (query.WhereEntries.Count != 0)
-        {
-            sql += " WHERE ";
-            for (int i = 0; i < query.WhereEntries.Count; i++)
-            {
-                var (column, value) = query.WhereEntries[i];
-                sql += $"\"{column}\" = ${i + 1}";
-                bindings.Add(value);
-                if (i != query.WhereEntries.Count - 1)
-                    sql += " AND ";
-
-            }
-        }
-        return (sql, bindings);
+    protected override string WrapIndentifier(string identifier)
+    {
+        return $"\"{identifier}\"";
     }
 }
 
 
 public class SqlServerCompiler : Compiler
 {
-    public (string Sql, List<object> Bindings) Compile(Query query)
+    protected override string FormatParameter(int index)
     {
-        var bindings = new List<object>();
+        return $"@p{index}";
+    }
 
-        if (query.SelectColumns.Count == 0)
-            throw new ArgumentException("no column");
-        if (query.FromTable.Length == 0)
-            throw new ArgumentException("no from table");
-
-        string sql = "SELECT ";
-        for (int i = 0; i < query.SelectColumns.Count; ++i)
-        {
-            sql += $"[{query.SelectColumns[i]}]";
-            if (i != query.SelectColumns.Count - 1)
-                sql += ", ";
-        }
-
-        sql += $" FROM [{query.FromTable}]";
-
-        if (query.WhereEntries.Count != 0)
-        {
-            sql += " WHERE ";
-            for (int i = 0; i < query.WhereEntries.Count; i++)
-            {
-                var (column, value) = query.WhereEntries[i];
-                sql += $"[{column}] = @p{i}";
-                bindings.Add(value);
-                if (i != query.WhereEntries.Count - 1)
-                    sql += " AND ";
-
-            }
-        }
-        return (sql, bindings);
+    protected override string WrapIndentifier(string identifier)
+    {
+        return $"[{identifier}]";
     }
 }

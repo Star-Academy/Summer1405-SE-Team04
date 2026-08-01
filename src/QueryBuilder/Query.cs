@@ -2,13 +2,17 @@
 
 public class Query
 {
-    public List<string> SelectColumns = new();
-    public string FromTable = string.Empty;
-    public List<(string column, object value)> WhereEntries = new();
+    private readonly List<string> _selectColumns = new();
+    private readonly List<(string column, object value)> _whereEntries = new();
+
+    public IReadOnlyList<string> SelectColumns => _selectColumns.AsReadOnly();
+    public IReadOnlyList<(string column, object value)> WhereEntries => _whereEntries.AsReadOnly();
+    public string FromTable {get; private set;} = string.Empty;
 
     public Query Select(params string[] columns)
     {
-        SelectColumns = columns.ToList();
+        _selectColumns.Clear();
+        _selectColumns.AddRange(columns);
         return this;
     }
 
@@ -20,7 +24,7 @@ public class Query
 
     public Query Where(string column, object value)
     {
-        WhereEntries.Add((column, value));
+        _whereEntries.Add((column, value));
         return this;
     }
 
