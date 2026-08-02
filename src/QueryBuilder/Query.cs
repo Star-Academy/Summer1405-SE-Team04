@@ -1,4 +1,5 @@
 ﻿namespace QueryBuilder;
+
 public class Query
 {
     private readonly List<string> _selectColumns = new();
@@ -6,7 +7,7 @@ public class Query
 
     public IReadOnlyList<string> SelectColumns => _selectColumns.AsReadOnly();
     public IReadOnlyList<(string column, object value)> WhereEntries => _whereEntries.AsReadOnly();
-    public string FromTable {get; private set;} = string.Empty;
+    public string FromTable { get; private set; } = string.Empty;
 
     public Query Select(params string[] columns)
     {
@@ -26,5 +27,4 @@ public class Query
         _whereEntries.Add((column, value));
         return this;
     }
-
 }

@@ -1,10 +1,6 @@
 using System.Text;
 
 namespace QueryBuilder;
-public interface ICompiler
-{
-    public (string Sql, List<object> Bindings) Compile(Query query);
-}
 
 public abstract class Compiler : ICompiler
 {
@@ -12,16 +8,16 @@ public abstract class Compiler : ICompiler
     {
         var sqlBuilder = new StringBuilder();
         var bindings = new List<object>();
-        
+
         _validateQuery(query);
         _appendSelectCommand(query, sqlBuilder);
         _appendFromCommand(query, sqlBuilder);
         _appendWhereCommand(query, sqlBuilder, bindings);
-        
+
         return (sqlBuilder.ToString(), bindings);
     }
 
-    private void _appendSelectCommand(Query query, StringBuilder sb) 
+    private void _appendSelectCommand(Query query, StringBuilder sb)
     {
         sb.Append("SELECT ");
         sb.Append(string.Join(", ", query.SelectColumns.Select(WrapIdentifier)));
@@ -34,9 +30,9 @@ public abstract class Compiler : ICompiler
 
     private void _appendWhereCommand(Query query, StringBuilder sb, List<object> bindings)
     {
-        if (query.WhereEntries.Count == 0) 
+        if (query.WhereEntries.Count == 0)
             return;
-        
+
         sb.Append(" WHERE ");
         sb.Append(string.Join(" AND ", query.WhereEntries.Select((entry, index) =>
         {
@@ -44,7 +40,7 @@ public abstract class Compiler : ICompiler
             return $"{WrapIdentifier(entry.column)} = {FormatParameter(index)}";
         })));
     }
-    
+
     private static void _validateQuery(Query query)
     {
         if (query.SelectColumns.Count == 0)
@@ -59,22 +55,4 @@ public abstract class Compiler : ICompiler
     }
 
     public abstract string WrapIdentifier(string identifier);
-
-}
-
-public class PostgresCompiler : Compiler
-{
-    public override string WrapIdentifier(string identifier)
-    {
-        return $"\"{identifier}\"";
-    }
-}
-
-
-public class SqlServerCompiler : Compiler
-{
-    public override string WrapIdentifier(string identifier)
-    {
-        return $"[{identifier}]";
-    }
 }
