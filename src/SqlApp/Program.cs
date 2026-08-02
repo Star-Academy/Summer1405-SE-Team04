@@ -4,11 +4,10 @@ using Microsoft.Data.SqlClient;
 using System.Data;
 using DotNetEnv;
 using System.Data.Common;
+using SqlApp;
 
 Env.TraversePath().Load();
 
-string pgConnStr = BuildPostgresConnectionString();
-string msConnStr = BuildSqlServerConnectionString();
 
 var query = new Query()
     .From("Student")
@@ -16,58 +15,37 @@ var query = new Query()
     .Where("IsMale", true);
 
 
-// Compile for PostgreSQL
-var pgCompiler = new PostgresCompiler();
-var pgResult = pgCompiler.Compile(query);
 
-// Compile for SQL Server
-var msCompiler = new SqlServerCompiler();
-var msResult = msCompiler.Compile(query);
+await RunPgQuery(query);
+await RunMsQuery(query);
+
+return;
 
 
-await using var dataSource = NpgsqlDataSource.Create(pgConnStr);
-await using (var cmd = dataSource.CreateCommand(pgResult.Sql.ToLower()))
+async Task RunPgQuery(Query query)
 {
-    foreach (var binding in pgResult.Bindings)
-    {
-        cmd.Parameters.AddWithValue(binding);
-    }
-
-    await using var reader = await cmd.ExecuteReaderAsync();
-    await PrintQueryResultAsync(reader);
-
+    Console.WriteLine("Postgres Execution Result :");
+    var pgConnStr = BuildPostgresConnectionString();
+    var pgService = new PgService(pgConnStr);
+    await PrintQueryResultAsync(await pgService.ExecuteQuery(query));
 }
 
-using (var connection = new SqlConnection(msConnStr))
+async Task RunMsQuery(Query query)
 {
-    await connection.OpenAsync();
-    Console.WriteLine("Connected successfully.");
-    using (var command = connection.CreateCommand())
-    {
-        command.CommandType = CommandType.Text;
-        command.CommandText = msResult.Sql;
-
-        for (int i = 0; i < msResult.Bindings.Count; i++)
-        {
-            command.Parameters.AddWithValue($"@p{i}", msResult.Bindings[i]);
-        }
-
-        await using var reader = await command.ExecuteReaderAsync();
-        await PrintQueryResultAsync(reader);
-    }
-    Console.WriteLine("Press any key to finish...");
-    Console.ReadKey(true);
+    Console.WriteLine("Microsoft SQL Server Execution Result :");
+    var msConnStr = BuildSqlServerConnectionString();
+    var msService = new MsService(msConnStr);
+    await PrintQueryResultAsync(await msService.ExecuteQuery(query));
 }
 
-static async Task PrintQueryResultAsync(DbDataReader reader)
+
+async Task PrintQueryResultAsync(DbDataReader reader)
 {
     while (await reader.ReadAsync())
     {
         Console.WriteLine($"STID: {reader["StudentNumber"]}, FirstName: {reader["FirstName"]}");
     }
 }
-
-
 
 static string BuildPostgresConnectionString()
 {

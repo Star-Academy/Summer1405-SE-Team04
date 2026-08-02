@@ -45,26 +45,26 @@ public abstract class Compiler : ICompiler
         })));
     }
     
-    private void _validateQuery(Query query)
+    private static void _validateQuery(Query query)
     {
         if (query.SelectColumns.Count == 0)
             throw new ArgumentException("no column");
         if (query.FromTable.Length == 0)
             throw new ArgumentException("no from table");
     }
-    protected abstract string WrapIdentifier(string identifier);
-    protected abstract string FormatParameter(int index);
+
+    public string FormatParameter(int index)
+    {
+        return $"@p{index}";
+    }
+
+    public abstract string WrapIdentifier(string identifier);
 
 }
 
 public class PostgresCompiler : Compiler
 {
-    protected override string FormatParameter(int index)
-    {
-        return $"${index + 1}";
-    }
-
-    protected override string WrapIdentifier(string identifier)
+    public override string WrapIdentifier(string identifier)
     {
         return $"\"{identifier}\"";
     }
@@ -73,12 +73,7 @@ public class PostgresCompiler : Compiler
 
 public class SqlServerCompiler : Compiler
 {
-    protected override string FormatParameter(int index)
-    {
-        return $"@p{index}";
-    }
-
-    protected override string WrapIdentifier(string identifier)
+    public override string WrapIdentifier(string identifier)
     {
         return $"[{identifier}]";
     }
