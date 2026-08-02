@@ -1,9 +1,6 @@
-﻿using Npgsql;
-using QueryBuilder;
-using Microsoft.Data.SqlClient;
-using System.Data;
+﻿using System.Data.Common;
 using DotNetEnv;
-using System.Data.Common;
+using QueryBuilder;
 using SqlApp;
 
 Env.TraversePath().Load();
@@ -13,7 +10,6 @@ var query = new Query()
     .From("Student")
     .Select("StudentNumber", "FirstName")
     .Where("IsMale", true);
-
 
 
 await RunPgQuery(query);
@@ -41,28 +37,31 @@ async Task RunMsQuery(Query query)
 
 async Task PrintQueryResultAsync(DbDataReader reader)
 {
+    var rowNumber = 1;
+    var fields = new List<string>();
+    for (var i = 0; i < reader.FieldCount; i++) fields.Add(reader.GetName(i));
+    Console.WriteLine(string.Join(", ", fields));
     while (await reader.ReadAsync())
-    {
-        Console.WriteLine($"STID: {reader["StudentNumber"]}, FirstName: {reader["FirstName"]}");
-    }
+        Console.WriteLine($"{rowNumber++}: {string.Join(", ", fields.Select(f => reader[f]))}");
 }
 
 static string BuildPostgresConnectionString()
 {
-    string host = Environment.GetEnvironmentVariable("PG_HOST") ?? "localhost";
-    string port = Environment.GetEnvironmentVariable("PG_PORT") ?? "5432";
-    string db = Environment.GetEnvironmentVariable("POSTGRES_DB") ?? "team04";
-    string user = Environment.GetEnvironmentVariable("POSTGRES_USER") ?? "mohaymen";
-    string pass = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD") ?? string.Empty;
+    var host = Environment.GetEnvironmentVariable("PG_HOST") ?? "localhost";
+    var port = Environment.GetEnvironmentVariable("PG_PORT") ?? "5432";
+    var db = Environment.GetEnvironmentVariable("POSTGRES_DB") ?? "team04";
+    var user = Environment.GetEnvironmentVariable("POSTGRES_USER") ?? "mohaymen";
+    var pass = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD") ?? string.Empty;
 
     return $"Host={host};Port={port};Database={db};Username={user};Password={pass};";
 }
 
 static string BuildSqlServerConnectionString()
 {
-    string server = Environment.GetEnvironmentVariable("MS_SERVER") ?? "localhost,1433";
-    string db = Environment.GetEnvironmentVariable("MS_DATABASE") ?? "mohaymen-sqlserver";
-    string pass = Environment.GetEnvironmentVariable("MSSQL_SA_PASSWORD") ?? string.Empty;
+    var server = Environment.GetEnvironmentVariable("MS_SERVER") ?? "localhost,1433";
+    var db = Environment.GetEnvironmentVariable("MS_DATABASE") ?? "mohaymen-sqlserver";
+    var pass = Environment.GetEnvironmentVariable("MSSQL_SA_PASSWORD") ?? string.Empty;
 
-    return $"Server={server};Database={db};User Id=sa;Password={pass};Connection Timeout=30;TrustServerCertificate=True;";
+    return
+        $"Server={server};Database={db};User Id=sa;Password={pass};Connection Timeout=30;TrustServerCertificate=True;";
 }

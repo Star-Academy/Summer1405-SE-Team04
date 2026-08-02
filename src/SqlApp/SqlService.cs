@@ -8,23 +8,22 @@ namespace SqlApp;
 
 public abstract class SqlService
 {
-    private readonly string _connString;
     private readonly Compiler _compiler;
+    private readonly string _connString;
 
     protected SqlService(string connString)
     {
         _connString = connString;
         _compiler = createCompiler();
-        
     }
 
     public async Task<DbDataReader> ExecuteQuery(Query query)
     {
-        var queryResult= _compiler.Compile(query);
-        
+        var queryResult = _compiler.Compile(query);
+
         var connection = createConnection(_connString);
         await connection.OpenAsync();
-        
+
         var cmd = connection.CreateCommand();
         cmd.CommandType = CommandType.Text;
         cmd.CommandText = queryResult.Sql;
@@ -39,15 +38,16 @@ public abstract class SqlService
 
         return await cmd.ExecuteReaderAsync(CommandBehavior.CloseConnection);
     }
-    abstract protected Compiler createCompiler();
-    abstract protected DbConnection createConnection(string connectionString);
-    
-    
+
+    protected abstract Compiler createCompiler();
+    protected abstract DbConnection createConnection(string connectionString);
 }
 
 public class PgService : SqlService
 {
-    public PgService(string connectionString) : base(connectionString){}
+    public PgService(string connectionString) : base(connectionString)
+    {
+    }
 
     protected override Compiler createCompiler()
     {
@@ -62,7 +62,9 @@ public class PgService : SqlService
 
 public class MsService : SqlService
 {
-    public MsService(string connectionString) : base(connectionString){}
+    public MsService(string connectionString) : base(connectionString)
+    {
+    }
 
     protected override Compiler createCompiler()
     {
@@ -73,4 +75,4 @@ public class MsService : SqlService
     {
         return new SqlConnection(connectionString);
     }
-} 
+}
