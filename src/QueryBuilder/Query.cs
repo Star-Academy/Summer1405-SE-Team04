@@ -1,5 +1,4 @@
 ﻿namespace QueryBuilder;
-
 public class Query
 {
     private readonly List<string> _selectColumns = new();

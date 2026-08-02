@@ -26,7 +26,6 @@ var msResult = msCompiler.Compile(query);
 
 
 await using var dataSource = NpgsqlDataSource.Create(pgConnStr);
-
 await using (var cmd = dataSource.CreateCommand(pgResult.Sql.ToLower()))
 {
     foreach (var binding in pgResult.Bindings)

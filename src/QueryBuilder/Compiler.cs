@@ -1,6 +1,6 @@
 using System.Text;
-using QueryBuilder;
 
+namespace QueryBuilder;
 public interface ICompiler
 {
     public (string Sql, List<object> Bindings) Compile(Query query);
@@ -11,34 +11,48 @@ public abstract class Compiler : ICompiler
     public (string Sql, List<object> Bindings) Compile(Query query)
     {
         var sqlBuilder = new StringBuilder();
-        ValidateQuery(query);
         var bindings = new List<object>();
-
-        sqlBuilder.Append("SELECT ");
-        sqlBuilder.Append(string.Join(", ", query.SelectColumns.Select(c => WrapIndentifier(c))));
-
-        sqlBuilder.Append($" FROM {WrapIndentifier(query.FromTable)}");
-
-        if (query.WhereEntries.Count != 0)
-        {
-            sqlBuilder.Append(" WHERE ");
-            sqlBuilder.Append(string.Join(" AND ", query.WhereEntries.Select((entry, index) =>
-            {
-                bindings.Add(entry.value);
-                return $"{WrapIndentifier(entry.column)} = {FormatParameter(index)}";
-            })));
-        }
+        
+        _validateQuery(query);
+        _appendSelectCommand(query, sqlBuilder);
+        _appendFromCommand(query, sqlBuilder);
+        _appendWhereCommand(query, sqlBuilder, bindings);
+        
         return (sqlBuilder.ToString(), bindings);
     }
 
-    private void ValidateQuery(Query query)
+    private void _appendSelectCommand(Query query, StringBuilder sb) 
+    {
+        sb.Append("SELECT ");
+        sb.Append(string.Join(", ", query.SelectColumns.Select(WrapIdentifier)));
+    }
+
+    private void _appendFromCommand(Query query, StringBuilder sb)
+    {
+        sb.Append($" FROM {WrapIdentifier(query.FromTable)}");
+    }
+
+    private void _appendWhereCommand(Query query, StringBuilder sb, List<object> bindings)
+    {
+        if (query.WhereEntries.Count == 0) 
+            return;
+        
+        sb.Append(" WHERE ");
+        sb.Append(string.Join(" AND ", query.WhereEntries.Select((entry, index) =>
+        {
+            bindings.Add(entry.value);
+            return $"{WrapIdentifier(entry.column)} = {FormatParameter(index)}";
+        })));
+    }
+    
+    private void _validateQuery(Query query)
     {
         if (query.SelectColumns.Count == 0)
             throw new ArgumentException("no column");
         if (query.FromTable.Length == 0)
             throw new ArgumentException("no from table");
     }
-    protected abstract string WrapIndentifier(string identifier);
+    protected abstract string WrapIdentifier(string identifier);
     protected abstract string FormatParameter(int index);
 
 }
@@ -50,7 +64,7 @@ public class PostgresCompiler : Compiler
         return $"${index + 1}";
     }
 
-    protected override string WrapIndentifier(string identifier)
+    protected override string WrapIdentifier(string identifier)
     {
         return $"\"{identifier}\"";
     }
@@ -64,7 +78,7 @@ public class SqlServerCompiler : Compiler
         return $"@p{index}";
     }
 
-    protected override string WrapIndentifier(string identifier)
+    protected override string WrapIdentifier(string identifier)
     {
         return $"[{identifier}]";
     }
