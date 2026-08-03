@@ -3,10 +3,10 @@
 public class Query
 {
     private readonly List<string> _selectColumns = new();
-    private readonly List<(string column, object value)> _whereEntries = new();
+    private readonly List<WhereClause> _whereEntries = new();
 
     public IReadOnlyList<string> SelectColumns => _selectColumns.AsReadOnly();
-    public IReadOnlyList<(string column, object value)> WhereEntries => _whereEntries.AsReadOnly();
+    public IReadOnlyList<WhereClause> WhereEntries => _whereEntries.AsReadOnly();
     public string FromTable { get; private set; } = string.Empty;
 
     public Query Select(params string[] columns)
@@ -22,9 +22,15 @@ public class Query
         return this;
     }
 
-    public Query Where(string column, object value)
+    public Query Where(string column, SqlOperator op, object value)
     {
-        _whereEntries.Add((column, value));
+        _whereEntries.Add(new WhereClause(column, op, value));
+        return this;
+    }
+
+    public Query WhereEquals(string column, object value)
+    {
+        Where(column, SqlOperator.Equal, value);
         return this;
     }
 }

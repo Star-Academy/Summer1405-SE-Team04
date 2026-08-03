@@ -34,10 +34,10 @@ public abstract class Compiler : ICompiler
             return;
 
         sb.Append(" WHERE ");
-        sb.Append(string.Join(" AND ", query.WhereEntries.Select((entry, index) =>
+        sb.Append(string.Join(" AND ", query.WhereEntries.Select((whereClause, index) =>
         {
-            bindings.Add(entry.value);
-            return $"{WrapIdentifier(entry.column)} = {FormatParameter(index)}";
+            bindings.Add(whereClause.Value);
+            return $"{WrapIdentifier(whereClause.Column)} {whereClause.Op} {FormatParameter(index)}";
         })));
     }
 
