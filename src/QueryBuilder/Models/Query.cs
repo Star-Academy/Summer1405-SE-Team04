@@ -1,4 +1,6 @@
-﻿namespace QueryBuilder;
+﻿using QueryBuilder.Utils;
+
+namespace QueryBuilder.Models;
 
 public class Query
 {
@@ -32,7 +34,7 @@ public class Query
     {
         return Where(column, "=", value);
     }
-    
+
     public Query Where(string column, string sqlOperator, object value)
     {
         if (!Validator.ValidateStringsNotEmpty(column))

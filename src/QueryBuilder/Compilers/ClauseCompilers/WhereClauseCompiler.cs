@@ -1,4 +1,7 @@
-using QueryBuilder;
+using QueryBuilder.Models;
+using QueryBuilder.ParameterFixer;
+
+namespace QueryBuilder.Compilers.ClauseCompilers;
 
 public class WhereClauseCompiler : IClauseCompiler
 {
@@ -8,8 +11,6 @@ public class WhereClauseCompiler : IClauseCompiler
             return string.Empty;
 
         return $" WHERE {string.Join(" AND ", query.WhereEntries.Select((whereClause, index) =>
-        {
-            return $"{parameterFixer.WrapIdentifier(whereClause.Column)} {whereClause.Op} {parameterFixer.FormatParameter(index)}";
-        }))}";
+            $"{parameterFixer.WrapIdentifier(whereClause.Column)} {whereClause.Operator} {parameterFixer.FormatParameter(index)}"))}";
     }
 }

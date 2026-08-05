@@ -1,5 +1,5 @@
 ﻿using DotNetEnv;
-using QueryBuilder;
+using QueryBuilder.Models;
 
 Env.TraversePath().Load();
 

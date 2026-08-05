@@ -1,4 +1,6 @@
-namespace QueryBuilder;
+using QueryBuilder.Models;
+
+namespace QueryBuilder.Compilers;
 
 public interface ICompiler
 {

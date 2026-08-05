@@ -1,15 +1,11 @@
-namespace QueryBuilder;
+using QueryBuilder.Compilers.ClauseCompilers;
+using QueryBuilder.ParameterFixer;
 
-public class PostgresCompiler : Compiler
-{
-    public PostgresCompiler() : base(
-        new PostgresParameterFixer(),
-        [
-            new SelectClauseCompiler(),
-            new FromClauseCompiler(),
-            new WhereClauseCompiler()
-        ]
-    )
-    {
-    }
-}
+namespace QueryBuilder.Compilers;
+
+public class PostgresCompiler() : Compiler(new PostgresParameterFixer(),
+[
+    new SelectClauseCompiler(),
+    new FromClauseCompiler(),
+    new WhereClauseCompiler()
+]);

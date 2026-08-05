@@ -1,3 +1,5 @@
+namespace SqlApp;
+
 internal static class Config
 {
     public static string BuildPostgresConnectionString()

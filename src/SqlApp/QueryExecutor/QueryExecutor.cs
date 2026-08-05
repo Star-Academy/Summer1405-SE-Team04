@@ -1,8 +1,9 @@
 using System.Data;
 using System.Data.Common;
-using QueryBuilder;
+using QueryBuilder.Compilers;
+using QueryBuilder.Models;
 
-namespace SqlApp;
+namespace SqlApp.QueryExecutor;
 
 public class QueryExecutor : IQueryExecutor
 {
@@ -21,7 +22,8 @@ public class QueryExecutor : IQueryExecutor
     public async Task<DbDataReader> ExecuteQuery(Query query)
     {
         var queryResult = _compiler.Compile(query);
-        var connection = _dbFactory.CreateConnection();
+        var connection = _dbFactory.CreateConnection()
+                         ?? throw new InvalidOperationException($"Cannot create connection for {query}");
         connection.ConnectionString = _connectionString;
         try
         {

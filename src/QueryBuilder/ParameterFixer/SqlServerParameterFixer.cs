@@ -1,3 +1,5 @@
+namespace QueryBuilder.ParameterFixer;
+
 public class SqlServerParameterFixer : IParameterFixer
 {
     public string WrapIdentifier(string identifier)

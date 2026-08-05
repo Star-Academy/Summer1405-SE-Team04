@@ -1,3 +1,5 @@
+namespace QueryBuilder.ParameterFixer;
+
 public class PostgresParameterFixer : IParameterFixer
 {
     public string WrapIdentifier(string identifier)

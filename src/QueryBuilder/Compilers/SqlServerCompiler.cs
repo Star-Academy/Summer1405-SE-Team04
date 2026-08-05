@@ -1,15 +1,11 @@
-namespace QueryBuilder;
+using QueryBuilder.Compilers.ClauseCompilers;
+using QueryBuilder.ParameterFixer;
 
-public class SqlServerCompiler : Compiler
-{
-    public SqlServerCompiler() : base(
-        new SqlServerParameterFixer(),
-        [
-            new SelectClauseCompiler(),
-            new FromClauseCompiler(),
-            new WhereClauseCompiler()
-        ]
-    )
-    {
-    }
-}
+namespace QueryBuilder.Compilers;
+
+public class SqlServerCompiler() : Compiler(new SqlServerParameterFixer(),
+[
+    new SelectClauseCompiler(),
+    new FromClauseCompiler(),
+    new WhereClauseCompiler()
+]);

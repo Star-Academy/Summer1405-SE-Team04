@@ -1,3 +1,5 @@
+namespace QueryBuilder.Utils;
+
 public static class Validator
 {
     public static bool ValidateParams(object[] parameters)
@@ -7,6 +9,6 @@ public static class Validator
 
     public static bool ValidateStringsNotEmpty(params string[] parameters)
     {
-        return !parameters.Any(x => string.IsNullOrWhiteSpace(x));
+        return !parameters.Any(string.IsNullOrWhiteSpace);
     }
 }

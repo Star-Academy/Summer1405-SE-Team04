@@ -1,8 +1,10 @@
 using System.Data.Common;
 
-internal class QueryService
+namespace SqlApp.QueryService;
+
+internal class QueryService : IQueryService
 {
-    public static async Task PrintQueryResultAsync(DbDataReader reader)
+    public async Task PrintQueryResultAsync(DbDataReader reader)
     {
         var rowNumber = 1;
         var fields = new List<string>();

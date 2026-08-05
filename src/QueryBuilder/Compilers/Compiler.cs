@@ -1,13 +1,16 @@
 using System.Text;
+using QueryBuilder.Compilers.ClauseCompilers;
+using QueryBuilder.Models;
+using QueryBuilder.ParameterFixer;
 
-namespace QueryBuilder;
+namespace QueryBuilder.Compilers;
 
 public class Compiler : ICompiler
 {
     private readonly List<IClauseCompiler> _clauseCompilers;
     private readonly IParameterFixer _parameterFixer;
 
-    public Compiler(IParameterFixer parameterFixer, IEnumerable<IClauseCompiler> clauseCompilers)
+    protected Compiler(IParameterFixer parameterFixer, IEnumerable<IClauseCompiler> clauseCompilers)
     {
         _parameterFixer = parameterFixer;
         _clauseCompilers = clauseCompilers.ToList();
@@ -16,15 +19,16 @@ public class Compiler : ICompiler
     public (string Sql, List<(string parameterName, object value)> Bindings) Compile(Query query)
     {
         var sqlBuilder = new StringBuilder();
-        var bindings = query.WhereEntries.Select((x, Index) => (_parameterFixer.FormatParameter(Index), x.Value))
+        var bindings = query.WhereEntries.Select((clause, index) =>
+                (_parameterFixer.FormatParameter(index), clause.Value))
             .ToList();
         _validateQuery(query);
-        foreach (var clauseComiler in _clauseCompilers)
-            sqlBuilder.Append(clauseComiler.Compile(query, _parameterFixer));
+        foreach (var clauseCompiler in _clauseCompilers)
+            sqlBuilder.Append(clauseCompiler.Compile(query, _parameterFixer));
         return (sqlBuilder.ToString(), bindings);
     }
 
-    public static void _validateQuery(Query query)
+    private static void _validateQuery(Query query)
     {
         if (query.SelectColumns.Count == 0)
             throw new ArgumentException("no column");
