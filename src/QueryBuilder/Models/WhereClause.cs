@@ -1,3 +1,3 @@
 namespace QueryBuilder;
 
-public record WhereClause(string Column, SqlOperator Op, object Value);
+public record WhereClause(string Column, string Operator, object Value);

@@ -6,4 +6,4 @@ Env.TraversePath().Load();
 var query = new Query()
     .From("Student")
     .Select("StudentNumber", "FirstName")
-    .WhereEquals("IsMale", true);
+    .Where("IsMale", true);

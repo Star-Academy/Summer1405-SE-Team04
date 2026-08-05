@@ -28,17 +28,16 @@ public class Query
         return this;
     }
 
-    public Query Where(string column, SqlOperator sqlOperator, object value)
+    public Query Where(string column, object value)
+    {
+        return Where(column, "=", value);
+    }
+    
+    public Query Where(string column, string sqlOperator, object value)
     {
         if (!Validator.ValidateStringsNotEmpty(column))
             throw new ArgumentException("ColumnName must be valid name.");
         _whereEntries.Add(new WhereClause(column, sqlOperator, value));
-        return this;
-    }
-
-    public Query WhereEquals(string column, object value)
-    {
-        Where(column, SqlOperator.Equal, value);
         return this;
     }
 }
