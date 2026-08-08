@@ -6,6 +6,7 @@ namespace QueryBuilder.Compilers.ClauseCompilers;
 internal sealed class WhereClauseCompiler(IParameterFixer parameterFixer) : IClauseCompiler
 {
     private readonly IParameterFixer _parameterFixer = parameterFixer;
+
     public string Compile(Query query)
     {
         if (query.WhereEntries.Count == 0)

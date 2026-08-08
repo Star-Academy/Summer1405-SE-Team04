@@ -15,9 +15,12 @@ internal class Compiler : ICompiler
     private readonly IValidator _validator;
 
     public Compiler(IParameterFixer parameterFixer, IClauseCompilerFactory clauseCompilerFactory, IValidator validator)
-    : this(parameterFixer, clauseCompilerFactory.CreateClauses(), validator) { }
+        : this(parameterFixer, clauseCompilerFactory.CreateClauses(), validator)
+    {
+    }
 
-    protected Compiler(IParameterFixer parameterFixer, IEnumerable<IClauseCompiler> clauseCompilers, IValidator validator)
+    protected Compiler(IParameterFixer parameterFixer, IEnumerable<IClauseCompiler> clauseCompilers,
+        IValidator validator)
     {
         if (parameterFixer == null)
             throw new ArgumentNullException(nameof(parameterFixer));

@@ -2,10 +2,12 @@ namespace QueryBuilder.ParameterFixer;
 
 internal sealed class SqlServerParameterFixer : IParameterFixer
 {
-    public static SqlServerParameterFixer Instance { get; } = new SqlServerParameterFixer();
-    
-    private SqlServerParameterFixer(){}
-    
+    private SqlServerParameterFixer()
+    {
+    }
+
+    public static SqlServerParameterFixer Instance { get; } = new();
+
     public string WrapIdentifier(string identifier)
     {
         return $"[{identifier}]";

@@ -1,18 +1,16 @@
 using System.Data;
 using System.Data.Common;
-using Microsoft.Data.SqlClient;
 using QueryBuilder.Compilers;
 using QueryBuilder.Models;
 
 namespace SqlApp.QueryExecutor;
 
-
 public class QueryExecutor(DbProviderFactory dbFactory, ICompiler compiler, string connectionString)
     : IQueryExecutor
 {
-    private readonly DbProviderFactory _dbFactory = dbFactory;
     private readonly ICompiler _compiler = compiler;
     private readonly string _connectionString = connectionString;
+    private readonly DbProviderFactory _dbFactory = dbFactory;
 
     public async Task<DbDataReader> ExecuteQuery(Query query)
     {

@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
     <ItemGroup>
-        <InternalsVisibleTo Include="SqlApp" />
+        <InternalsVisibleTo Include="SqlApp"/>
     </ItemGroup>
 
 </Project>

@@ -2,11 +2,11 @@ namespace QueryBuilder.ParameterFixer;
 
 internal sealed class PostgresParameterFixer : IParameterFixer
 {
-    public static PostgresParameterFixer Instance { get; } = new PostgresParameterFixer();
-    
     private PostgresParameterFixer()
     {
     }
+
+    public static PostgresParameterFixer Instance { get; } = new();
 
     public string WrapIdentifier(string identifier)
     {

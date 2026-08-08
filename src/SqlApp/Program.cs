@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using DotNetEnv;
+﻿using DotNetEnv;
 using Npgsql;
 using QueryBuilder.Compilers;
 using QueryBuilder.Factory;

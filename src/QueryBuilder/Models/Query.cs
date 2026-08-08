@@ -5,24 +5,28 @@ namespace QueryBuilder.Models;
 public class Query
 {
     private readonly List<string> _selectColumns = new();
+
+    private readonly IValidator _validator;
     private readonly List<WhereClause> _whereEntries = new();
+
+    public Query() : this(new SqlValidator())
+    {
+    }
+
+    public Query(IValidator validator)
+    {
+        _validator = validator;
+    }
 
     public IReadOnlyList<string> SelectColumns => _selectColumns.AsReadOnly();
     public IReadOnlyList<WhereClause> WhereEntries => _whereEntries.AsReadOnly();
     public string FromTable { get; private set; } = string.Empty;
 
-    private readonly IValidator _validator;    
-
-    public Query(): this(new SqlValidator()){}
-    public Query(IValidator validator)
-    {
-        _validator=validator;
-    }
     public Query Select(params string[] columns)
     {
         if (!_validator.ValidateStringsNotEmpty(columns))
             throw new ArgumentException("Every column must be valid name.");
-        
+
         _selectColumns.Clear();
         _selectColumns.AddRange(columns);
         return this;

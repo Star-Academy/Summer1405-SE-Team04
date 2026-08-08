@@ -1,5 +1,4 @@
 using QueryBuilder.Models;
-using QueryBuilder.ParameterFixer;
 
 namespace QueryBuilder.Compilers.ClauseCompilers;
 

@@ -7,7 +7,7 @@ public class PostgresClauseCompilerFactory : IClauseCompilerFactory
 {
     public IEnumerable<IClauseCompiler> CreateClauses()
     {
-        return 
+        return
         [
             new SelectClauseCompiler(PostgresParameterFixer.Instance),
             new FromClauseCompiler(PostgresParameterFixer.Instance),

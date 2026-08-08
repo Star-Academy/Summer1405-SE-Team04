@@ -4,5 +4,5 @@ namespace QueryBuilder.Compilers;
 
 public interface ICompiler
 {
-   SqlResult Compile(Query query);
+    SqlResult Compile(Query query);
 }

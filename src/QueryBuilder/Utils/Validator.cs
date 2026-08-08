@@ -8,7 +8,8 @@ public interface IValidator
     bool ValidateStringsNotEmpty(params string[] parameters);
     bool ValidateQuery(Query query);
 }
-public class SqlValidator:IValidator
+
+public class SqlValidator : IValidator
 {
     public bool ValidateParams(object[] parameters)
     {
