@@ -13,13 +13,14 @@ public class QueryExecutor : IQueryExecutor
 
     public QueryExecutor(DbProviderFactory dbFactory, ICompiler compiler, string connectionString)
     {
-        _dbFactory = dbFactory;
-        _compiler = compiler;
-        _connectionString = connectionString;
+        _dbFactory = dbFactory ?? throw new ArgumentNullException(nameof(dbFactory));
+        _compiler = compiler ?? throw new ArgumentNullException(nameof(compiler));
+        _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
     }
 
     public async Task<DbDataReader> ExecuteQuery(Query query)
     {
+        ArgumentNullException.ThrowIfNull(query);
         var queryResult = _compiler.Compile(query);
         var connection = _dbFactory.CreateConnection()
                          ?? throw new InvalidOperationException($"Cannot create connection for {query}");

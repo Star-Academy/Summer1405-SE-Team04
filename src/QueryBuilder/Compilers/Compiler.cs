@@ -22,12 +22,9 @@ internal class Compiler : ICompiler
     protected Compiler(IParameterFixer parameterFixer, IEnumerable<IClauseCompiler> clauseCompilers,
         IValidator validator)
     {
-        if (parameterFixer == null)
-            throw new ArgumentNullException(nameof(parameterFixer));
-        if (clauseCompilers == null)
-            throw new ArgumentNullException(nameof(clauseCompilers));
-        if (validator == null)
-            throw new ArgumentNullException(nameof(validator));
+        ArgumentNullException.ThrowIfNull(parameterFixer);
+        ArgumentNullException.ThrowIfNull(clauseCompilers);
+        ArgumentNullException.ThrowIfNull(validator);
 
         _parameterFixer = parameterFixer;
         _clauseCompilers = clauseCompilers.ToList();
@@ -36,6 +33,7 @@ internal class Compiler : ICompiler
 
     public SqlResult Compile(Query query)
     {
+        ArgumentNullException.ThrowIfNull(query);
         var sqlBuilder = new StringBuilder();
         var bindings = query.WhereEntries.Select((clause, index) =>
                 (_parameterFixer.FormatParameter(index), clause.Value))

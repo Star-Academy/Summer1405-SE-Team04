@@ -1,6 +1,6 @@
 namespace SqlApp;
 
-internal class Config
+internal class Config : Iconfig
 {
     private readonly string MsDb = Environment.GetEnvironmentVariable("MS_DATABASE") ?? "mohaymen-sqlserver";
 

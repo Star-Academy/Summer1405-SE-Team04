@@ -9,7 +9,8 @@ internal sealed class FromClauseCompiler : IClauseCompiler
 
     public FromClauseCompiler(IParameterFixer parameterFixer)
     {
-        _parameterFixer = parameterFixer;
+
+        _parameterFixer = parameterFixer ?? throw new ArgumentNullException(nameof(parameterFixer));
     }
 
     public string Compile(Query query)
