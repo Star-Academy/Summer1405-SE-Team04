@@ -7,6 +7,7 @@
     </PropertyGroup>
     <ItemGroup>
         <InternalsVisibleTo Include="SqlApp"/>
+        <InternalsVisibleTo Include="UnitTests"/>
     </ItemGroup>
 
 </Project>
