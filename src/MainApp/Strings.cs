@@ -1,27 +1,26 @@
 public class AppStrings
 {
-    public string Search {get; init; }
-    public string Back {get; init; }
-    public string Forward {get; init; }
-    public string Stats {get; init; }
-    public string Unique {get; init; }
-    public string Exit {get; init; }
+    public string Search { get; init; }
+    public string Back { get; init; }
+    public string Forward { get; init; }
+    public string Stats { get; init; }
+    public string Unique { get; init; }
+    public string Exit { get; init; }
 
-    public string NoForward {get; init; }
-    public string NoBack {get; init; }
-    public string NoCurrent {get; init; }
-    public string Current {get; init; }
-
+    public string NoForward { get; init; }
+    public string NoBack { get; init; }
+    public string NoCurrent { get; init; }
+    public string Current { get; init; }
 }
 
 
-class Strings
+internal class Strings
 {
     public static string currentLanguage = "en";
 
-    private static Dictionary<string, AppStrings> translations = new()
+    private static readonly Dictionary<string, AppStrings> translations = new()
     {
-        ["en"] = new()
+        ["en"] = new AppStrings
         {
             // Commands
             Search = "SEARCH",
@@ -37,7 +36,7 @@ class Strings
             NoCurrent = "No current page",
             Current = "current: "
         },
-        ["fa"] = new()
+        ["fa"] = new AppStrings
         {
             // Commands
             Search = "search",
@@ -59,5 +58,4 @@ class Strings
     {
         return translations.ContainsKey(currentLanguage) ? translations[currentLanguage] : translations["en"];
     }
-
 }
