@@ -1,5 +1,6 @@
 using System.Text;
 using QueryBuilder.Compilers.ClauseCompilers;
+using QueryBuilder.Factory;
 using QueryBuilder.Models;
 using QueryBuilder.ParameterFixer;
 using QueryBuilder.Utils;
@@ -11,6 +12,11 @@ internal class Compiler : ICompiler
     private readonly List<IClauseCompiler> _clauseCompilers;
     private readonly IParameterFixer _parameterFixer;
 
+    public Compiler(IParameterFixer parameterFixer, IClauseCompilerFactory clauseCompilerFactory)
+    {
+        new Compiler(parameterFixer, clauseCompilerFactory.CreateClauses());
+    }
+    
     protected Compiler(IParameterFixer parameterFixer, IEnumerable<IClauseCompiler> clauseCompilers)
     {
         if (parameterFixer != null ||  clauseCompilers != null)
