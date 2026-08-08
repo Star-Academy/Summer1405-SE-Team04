@@ -10,7 +10,7 @@ public class QueryModelTest
     [InlineData("Every column must be valid name.")]
     [InlineData("Every column must be valid name.", "")]
     [InlineData("Every column must be valid name.", "a", "\t")]
-    public void QueryModel_SelectEmptyArgs_ThrowsArgumentException(string expectedMessage, params string[] inputs)
+    public void Should_ThrowArgumentException_When_SelectArgsAreEmpty(string expectedMessage, params string[] inputs)
     {
         // Arrange
         var query = new Query();
@@ -26,7 +26,7 @@ public class QueryModelTest
     }
 
     [Fact]
-    public void QueryModel_SelectTwice_OverridesColumns()
+    public void Should_OverrideColumns_When_SelectIsCalledTwice()
     {
         // Act
         var query = new Query().Select("FirstName", "LastName", "Age").Select("Grade");
@@ -38,7 +38,7 @@ public class QueryModelTest
     [Theory]
     [InlineData("TableName must be valid name.", "")]
     [InlineData("TableName must be valid name.", "\t")]
-    public void QueryModel_FromEmptyArgs_ThrowsArgumentException(string expectedMessage, string input)
+    public void Should_ThrowArgumentException_When_FromArgIsEmpty(string expectedMessage, string input)
     {
         // Arrange
         var query = new Query();
@@ -56,7 +56,7 @@ public class QueryModelTest
     [Theory]
     [InlineData("")]
     [InlineData("\t")]
-    public void QueryModel_WhereEmptyArgs_ThrowsArgumentException(string input)
+    public void Should_ThrowArgumentException_When_WhereColumnIsEmpty(string input)
     {
         // Arrange
         var query = new Query();
@@ -72,7 +72,7 @@ public class QueryModelTest
     }
 
     [Fact]
-    public void QueryModel_MultiWhere_AccumulatesClausesInOrder()
+    public void Should_AccumulateClausesInOrder_When_WhereIsCalledMultipleTimes()
     {
         // Act
         var query = new Query()
@@ -91,7 +91,7 @@ public class QueryModelTest
     }
 
     [Fact]
-    public void QueryModel_TwiceFrom_OverridesFromTable()
+    public void Should_OverrideFromTable_When_FromIsCalledTwice()
     {
         // Act
         var query = new Query().From("FirstName").From("LastName");
@@ -101,7 +101,7 @@ public class QueryModelTest
     }
 
     [Fact]
-    public void QueryModel_NewQuery_HasEmptyState()
+    public void Should_HaveEmptyState_When_QueryIsNew()
     {
         // Arrange
         var query = new Query();
@@ -119,7 +119,7 @@ public class QueryModelTest
     [InlineData("LIKE")]
     [InlineData("IN")]
     [InlineData("!=")]
-    public void QueryModel_CustomOperator_StoresOperatorVerbatim(string op)
+    public void Should_StoreOperatorVerbatim_When_CustomOperatorIsUsed(string op)
     {
         // Act
         var query = new Query().Where("Age", op, 10);
@@ -129,7 +129,7 @@ public class QueryModelTest
     }
 
     [Fact]
-    public void QueryModel_TwoArgWhere_DefaultsToEqualsOperator()
+    public void Should_DefaultToEqualsOperator_When_WhereIsCalledWithTwoArgs()
     {
         // Act
         var query = new Query().Where("Age", 10);
@@ -139,7 +139,7 @@ public class QueryModelTest
     }
 
     [Fact]
-    public void QueryModel_WhereSameColumnTwice_AccumulatesBothEntries()
+    public void Should_AccumulateBothEntries_When_WhereIsCalledTwiceOnSameColumn()
     {
         // Act
         var query = new Query().Where("Age", 10).Where("Age", 20);
@@ -151,7 +151,7 @@ public class QueryModelTest
     }
 
     [Fact]
-    public void QueryModel_SelectDuplicateColumns_KeepsBoth()
+    public void Should_KeepBothColumns_When_SelectHasDuplicateColumns()
     {
         // Act
         var query = new Query().Select("A", "A");
@@ -161,7 +161,7 @@ public class QueryModelTest
     }
 
     [Fact]
-    public void QueryModel_FluentMethods_ReturnSameInstance()
+    public void Should_ReturnSameInstance_When_FluentMethodsAreCalled()
     {
         // Arrange
         var query = new Query();
@@ -173,7 +173,7 @@ public class QueryModelTest
     }
 
     [Fact]
-    public void QueryModel_InjectedValidatorRejectingColumns_ThrowsArgumentException()
+    public void Should_ThrowArgumentException_When_InjectedValidatorRejectsColumns()
     {
         // Arrange
         var validatorMock = Substitute.For<IValidator>();
@@ -188,7 +188,7 @@ public class QueryModelTest
     }
 
     [Fact]
-    public void QueryModel_InjectedValidator_ReceivesSelectColumns()
+    public void Should_ReceiveSelectColumns_When_ValidatorIsInjected()
     {
         // Arrange
         var validatorMock = Substitute.For<IValidator>();
@@ -203,7 +203,7 @@ public class QueryModelTest
     }
 
     [Fact]
-    public void QueryModel_NullOperator_IsAcceptedUnvalidated()
+    public void Should_AcceptOperatorUnvalidated_When_OperatorIsNull()
     {
         // Act
         var query = new Query().Where("Age", null!, 10);
@@ -213,7 +213,7 @@ public class QueryModelTest
     }
 
     [Fact]
-    public void QueryModel_EmptyOperator_IsAcceptedUnvalidated()
+    public void Should_AcceptOperatorUnvalidated_When_OperatorIsEmpty()
     {
         // Act
         var query = new Query().Where("Age", "", 10);
@@ -223,7 +223,7 @@ public class QueryModelTest
     }
 
     [Fact]
-    public void QueryModel_NullValue_IsAcceptedUnvalidated()
+    public void Should_AcceptValueUnvalidated_When_ValueIsNull()
     {
         // Act
         var query = new Query().Where("Age", null!);
@@ -233,7 +233,7 @@ public class QueryModelTest
     }
 
     [Fact]
-    public void QueryModel_SelectColumns_RejectsMutation()
+    public void Should_RejectMutation_When_SelectColumnsIsModifiedDirectly()
     {
         // Arrange
         var query = new Query().Select("A");
@@ -246,7 +246,7 @@ public class QueryModelTest
     }
 
     [Fact]
-    public void QueryModel_SelectColumns_ReflectsLaterSelectCalls()
+    public void Should_ReflectLaterSelectCalls_When_SelectColumnsReferenceIsHeld()
     {
         // Arrange
         var query = new Query().Select("A");
@@ -260,7 +260,7 @@ public class QueryModelTest
     }
 
     [Fact]
-    public void QueryModel_NullValidator_ThrowsNullReferenceOnFirstUse()
+    public void Should_ThrowNullReferenceException_When_ValidatorIsNullOnFirstUse()
     {
         // Arrange
         var query = new Query(null!);

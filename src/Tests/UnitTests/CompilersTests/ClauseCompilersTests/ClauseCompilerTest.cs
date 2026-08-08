@@ -24,7 +24,7 @@ public class ClauseCompilerTest
     }
 
     [Fact]
-    public void SelectClauseCompiler_SingleColumn_ProducesSelectWithoutLeadingSpace()
+    public void Should_ProduceSelectWithoutLeadingSpace_When_SelectingSingleColumn()
     {
         // Arrange
         var query = new Query().Select("A");
@@ -37,7 +37,7 @@ public class ClauseCompilerTest
     }
 
     [Fact]
-    public void SelectClauseCompiler_MultiColumn_JoinsWithCommaSpace()
+    public void Should_JoinColumnsWithCommaSpace_When_SelectingMultipleColumns()
     {
         // Arrange
         var query = new Query().Select("A", "B", "C");
@@ -50,7 +50,7 @@ public class ClauseCompilerTest
     }
 
     [Fact]
-    public void SelectClauseCompiler_NoColumns_ProducesSelectWithTrailingSpace()
+    public void Should_ProduceSelectWithTrailingSpace_When_NoColumnsAreSelected()
     {
         // Arrange
         var query = new Query();
@@ -63,7 +63,7 @@ public class ClauseCompilerTest
     }
 
     [Fact]
-    public void SelectClauseCompiler_Compile_WrapsEveryColumnIdentifier()
+    public void Should_WrapEveryColumnIdentifier_When_Compiling()
     {
         // Arrange
         var query = new Query().Select("A", "B");
@@ -77,7 +77,7 @@ public class ClauseCompilerTest
     }
 
     [Fact]
-    public void SelectClauseCompiler_DuplicateColumns_EmitsBoth()
+    public void Should_EmitBothColumns_When_ColumnsAreDuplicated()
     {
         // Arrange
         var query = new Query().Select("A", "A");
@@ -90,7 +90,7 @@ public class ClauseCompilerTest
     }
 
     [Fact]
-    public void FromClauseCompiler_Table_ProducesFromWithLeadingSpace()
+    public void Should_ProduceFromWithLeadingSpace_When_TableIsSpecified()
     {
         // Arrange
         var query = new Query().From("Student");
@@ -103,7 +103,7 @@ public class ClauseCompilerTest
     }
 
     [Fact]
-    public void FromClauseCompiler_NoTable_ProducesFromWithEmptyIdentifier()
+    public void Should_ProduceFromWithEmptyIdentifier_When_NoTableIsSpecified()
     {
         // Arrange
         var query = new Query();
@@ -116,7 +116,7 @@ public class ClauseCompilerTest
     }
 
     [Fact]
-    public void FromClauseCompiler_Compile_WrapsTableIdentifier()
+    public void Should_WrapTableIdentifier_When_Compiling()
     {
         // Arrange
         var query = new Query().From("Student");
@@ -129,7 +129,7 @@ public class ClauseCompilerTest
     }
 
     [Fact]
-    public void WhereClauseCompiler_NoEntries_ProducesEmptyString()
+    public void Should_ProduceEmptyString_When_NoWhereEntriesExist()
     {
         // Arrange
         var query = new Query();
@@ -142,7 +142,7 @@ public class ClauseCompilerTest
     }
 
     [Fact]
-    public void WhereClauseCompiler_SingleEntry_ProducesWhereWithLeadingSpace()
+    public void Should_ProduceWhereWithLeadingSpace_When_SingleEntryExists()
     {
         // Arrange
         var query = new Query().Where("Age", 10);
@@ -155,7 +155,7 @@ public class ClauseCompilerTest
     }
 
     [Fact]
-    public void WhereClauseCompiler_MultiEntry_JoinsWithAnd()
+    public void Should_JoinEntriesWithAnd_When_MultipleEntriesExist()
     {
         // Arrange
         var query = new Query().Where("Age", 10).Where("IsMale", true);
@@ -173,7 +173,7 @@ public class ClauseCompilerTest
     [InlineData("LIKE")]
     [InlineData("!=")]
     [InlineData("IS NOT")]
-    public void WhereClauseCompiler_CustomOperator_EmitsOperatorVerbatim(string op)
+    public void Should_EmitOperatorVerbatim_When_CustomOperatorIsUsed(string op)
     {
         // Arrange
         var query = new Query().Where("Age", op, 10);
@@ -186,7 +186,7 @@ public class ClauseCompilerTest
     }
 
     [Fact]
-    public void WhereClauseCompiler_Compile_FormatsParameterPerEntryIndex()
+    public void Should_FormatParameterPerEntryIndex_When_Compiling()
     {
         // Arrange
         var query = new Query().Where("Age", 10).Where("IsMale", true);
@@ -200,7 +200,7 @@ public class ClauseCompilerTest
     }
 
     [Fact]
-    public void WhereClauseCompiler_NullOperator_ProducesDoubleSpace()
+    public void Should_ProduceDoubleSpace_When_OperatorIsNull()
     {
         // Arrange
         var query = new Query().Where("Age", null!, 10);
@@ -213,7 +213,7 @@ public class ClauseCompilerTest
     }
 
     [Fact]
-    public void WhereClauseCompiler_NoEntries_DoesNotTouchParameterFixer()
+    public void Should_NotTouchParameterFixer_When_NoWhereEntriesExist()
     {
         // Arrange
         var query = new Query();

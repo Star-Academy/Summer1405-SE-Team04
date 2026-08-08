@@ -10,7 +10,7 @@ namespace UnitTests;
 public class ClauseCompilerFactoryTest
 {
     [Fact]
-    public void PostgresClauseCompilerFactory_CreateClauses_ProducesSelectFromWhereInOrder()
+    public void Should_ProduceSelectFromWhereInOrder_When_UsingPostgresFactory()
     {
         // Act
         var clauses = new PostgresClauseCompilerFactory().CreateClauses().ToList();
@@ -23,7 +23,7 @@ public class ClauseCompilerFactoryTest
     }
 
     [Fact]
-    public void SqlServerClauseCompilerFactory_CreateClauses_ProducesSelectFromWhereInOrder()
+    public void Should_ProduceSelectFromWhereInOrder_When_UsingSqlServerFactory()
     {
         // Act
         var clauses = new SqlServerClauseCompilerFactory().CreateClauses().ToList();
@@ -36,7 +36,7 @@ public class ClauseCompilerFactoryTest
     }
 
     [Fact]
-    public void PostgresClauseCompilerFactory_CreateClausesTwice_ProducesFreshInstances()
+    public void Should_ProduceFreshInstances_When_PostgresFactoryCreateClausesIsCalledTwice()
     {
         // Arrange
         var sut = new PostgresClauseCompilerFactory();
@@ -51,7 +51,7 @@ public class ClauseCompilerFactoryTest
     }
 
     [Fact]
-    public void SqlServerClauseCompilerFactory_CreateClausesTwice_ProducesFreshInstances()
+    public void Should_ProduceFreshInstances_When_SqlServerFactoryCreateClausesIsCalledTwice()
     {
         // Arrange
         var sut = new SqlServerClauseCompilerFactory();
@@ -66,7 +66,7 @@ public class ClauseCompilerFactoryTest
     }
 
     [Fact]
-    public void PostgresClauseCompilerFactory_CompileFullQuery_ProducesDoubleQuotedSql()
+    public void Should_ProduceDoubleQuotedSql_When_CompilingFullQueryWithPostgresFactory()
     {
         // Arrange
         var sut = new Compiler(PostgresParameterFixer.Instance, new PostgresClauseCompilerFactory(), new SqlValidator());
@@ -80,7 +80,7 @@ public class ClauseCompilerFactoryTest
     }
 
     [Fact]
-    public void SqlServerClauseCompilerFactory_CompileFullQuery_ProducesBracketedSql()
+    public void Should_ProduceBracketedSql_When_CompilingFullQueryWithSqlServerFactory()
     {
         // Arrange
         var sut = new Compiler(SqlServerParameterFixer.Instance, new SqlServerClauseCompilerFactory(), new SqlValidator());
@@ -94,7 +94,7 @@ public class ClauseCompilerFactoryTest
     }
 
     [Fact]
-    public void PostgresClauseCompilerFactory_CompileFullQuery_ProducesBindingsMatchingSqlPlaceholders()
+    public void Should_ProduceBindingsMatchingSqlPlaceholders_When_CompilingFullQueryWithPostgresFactory()
     {
         // Arrange
         var sut = new Compiler(PostgresParameterFixer.Instance, new PostgresClauseCompilerFactory(), new SqlValidator());
