@@ -3,9 +3,14 @@ using QueryBuilder.ParameterFixer;
 
 namespace QueryBuilder.Compilers.ClauseCompilers;
 
-internal sealed class WhereClauseCompiler(IParameterFixer parameterFixer) : IClauseCompiler
+internal sealed class WhereClauseCompiler : IClauseCompiler
 {
-    private readonly IParameterFixer _parameterFixer = parameterFixer;
+    private readonly IParameterFixer _parameterFixer;
+
+    public WhereClauseCompiler(IParameterFixer parameterFixer)
+    {
+        _parameterFixer = parameterFixer;
+    }
 
     public string Compile(Query query)
     {

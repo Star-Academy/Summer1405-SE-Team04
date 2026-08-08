@@ -5,12 +5,18 @@ using QueryBuilder.Models;
 
 namespace SqlApp.QueryExecutor;
 
-public class QueryExecutor(DbProviderFactory dbFactory, ICompiler compiler, string connectionString)
-    : IQueryExecutor
+public class QueryExecutor : IQueryExecutor
 {
-    private readonly ICompiler _compiler = compiler;
-    private readonly string _connectionString = connectionString;
-    private readonly DbProviderFactory _dbFactory = dbFactory;
+    private readonly ICompiler _compiler;
+    private readonly string _connectionString;
+    private readonly DbProviderFactory _dbFactory;
+
+    public QueryExecutor(DbProviderFactory dbFactory, ICompiler compiler, string connectionString)
+    {
+        _dbFactory = dbFactory;
+        _compiler = compiler;
+        _connectionString = connectionString;
+    }
 
     public async Task<DbDataReader> ExecuteQuery(Query query)
     {
