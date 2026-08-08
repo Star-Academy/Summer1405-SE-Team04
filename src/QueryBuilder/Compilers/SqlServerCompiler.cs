@@ -3,9 +3,9 @@ using QueryBuilder.ParameterFixer;
 
 namespace QueryBuilder.Compilers;
 
-public class SqlServerCompiler() : Compiler(new SqlServerParameterFixer(),
+internal sealed class SqlServerCompiler() : Compiler(SqlServerParameterFixer.Instance,
 [
-    new SelectClauseCompiler(),
-    new FromClauseCompiler(),
-    new WhereClauseCompiler()
+    new SelectClauseCompiler(SqlServerParameterFixer.Instance),
+    new FromClauseCompiler(SqlServerParameterFixer.Instance),
+    new WhereClauseCompiler(SqlServerParameterFixer.Instance)
 ]);

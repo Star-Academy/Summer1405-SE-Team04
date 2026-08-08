@@ -3,9 +3,9 @@ using QueryBuilder.ParameterFixer;
 
 namespace QueryBuilder.Compilers;
 
-public class PostgresCompiler() : Compiler(new PostgresParameterFixer(),
+internal sealed class PostgresCompiler() : Compiler(PostgresParameterFixer.Instance,
 [
-    new SelectClauseCompiler(),
-    new FromClauseCompiler(),
-    new WhereClauseCompiler()
+    new SelectClauseCompiler(PostgresParameterFixer.Instance),
+    new FromClauseCompiler(PostgresParameterFixer.Instance),
+    new WhereClauseCompiler(PostgresParameterFixer.Instance)
 ]);

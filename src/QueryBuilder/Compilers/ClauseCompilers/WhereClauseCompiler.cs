@@ -3,9 +3,9 @@ using QueryBuilder.ParameterFixer;
 
 namespace QueryBuilder.Compilers.ClauseCompilers;
 
-public class WhereClauseCompiler : IClauseCompiler
+internal sealed class WhereClauseCompiler(IParameterFixer parameterFixer) : IClauseCompiler
 {
-    public string Compile(Query query, IParameterFixer parameterFixer)
+    public string Compile(Query query)
     {
         if (query.WhereEntries.Count == 0)
             return string.Empty;

@@ -13,10 +13,9 @@ public class Query
 
     public Query Select(params string[] columns)
     {
-        if (!Validator.ValidateParams(columns))
-            throw new ArgumentException("Columns can't be empty.");
         if (!Validator.ValidateStringsNotEmpty(columns))
             throw new ArgumentException("Every column must be valid name.");
+        
         _selectColumns.Clear();
         _selectColumns.AddRange(columns);
         return this;
