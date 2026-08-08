@@ -10,6 +10,8 @@ using SqlApp;
 using SqlApp.QueryExecutor;
 using SqlApp.QueryService;
 
+Env.TraversePath().Load();
+
 var query = new Query()
     .From("Student")
     .Select("StudentNumber", "FirstName")
