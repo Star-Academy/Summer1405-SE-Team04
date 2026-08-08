@@ -2,19 +2,25 @@ using QueryBuilder.Models;
 
 namespace QueryBuilder.Utils;
 
-public static class Validator
+public interface IValidator
 {
-    public static bool ValidateParams(object[] parameters)
+    bool ValidateParams(object[] parameters);
+    bool ValidateStringsNotEmpty(params string[] parameters);
+    bool ValidateQuery(Query query);
+}
+public class SqlValidator:IValidator
+{
+    public bool ValidateParams(object[] parameters)
     {
         return parameters.Length > 0;
     }
 
-    public static bool ValidateStringsNotEmpty(params string[] parameters)
+    public bool ValidateStringsNotEmpty(params string[] parameters)
     {
         return parameters.Length > 0 && !parameters.Any(string.IsNullOrWhiteSpace);
     }
 
-    public static bool ValidateQuery(Query query)
+    public bool ValidateQuery(Query query)
     {
         if (query.SelectColumns.Count == 0)
             return false;

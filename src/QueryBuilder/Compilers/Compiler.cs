@@ -12,22 +12,23 @@ internal class Compiler : ICompiler
     private readonly List<IClauseCompiler> _clauseCompilers;
     private readonly IParameterFixer _parameterFixer;
 
-    public Compiler(IParameterFixer parameterFixer, IClauseCompilerFactory clauseCompilerFactory)
+    private readonly IValidator _validator;
+
+    public Compiler(IParameterFixer parameterFixer, IClauseCompilerFactory clauseCompilerFactory, IValidator validator)
+    : this(parameterFixer, clauseCompilerFactory.CreateClauses(), validator) { }
+
+    protected Compiler(IParameterFixer parameterFixer, IEnumerable<IClauseCompiler> clauseCompilers, IValidator validator)
     {
-        new Compiler(parameterFixer, clauseCompilerFactory.CreateClauses());
-    }
-    
-    protected Compiler(IParameterFixer parameterFixer, IEnumerable<IClauseCompiler> clauseCompilers)
-    {
-        if (parameterFixer != null ||  clauseCompilers != null)
-        {
-            _parameterFixer = parameterFixer;
-            _clauseCompilers = clauseCompilers.ToList();
-        }
-        else
-        {
+        if (parameterFixer == null)
             throw new ArgumentNullException(nameof(parameterFixer));
-        }
+        if (clauseCompilers == null)
+            throw new ArgumentNullException(nameof(clauseCompilers));
+        if (validator == null)
+            throw new ArgumentNullException(nameof(validator));
+
+        _parameterFixer = parameterFixer;
+        _clauseCompilers = clauseCompilers.ToList();
+        _validator = validator;
     }
 
     public SqlResult Compile(Query query)
@@ -36,7 +37,9 @@ internal class Compiler : ICompiler
         var bindings = query.WhereEntries.Select((clause, index) =>
                 (_parameterFixer.FormatParameter(index), clause.Value))
             .ToList();
-        Validator.ValidateQuery(query);
+
+        if (!_validator.ValidateQuery(query))
+            throw new InvalidOperationException("Query is not valid.");
         foreach (var clauseCompiler in _clauseCompilers)
             sqlBuilder.Append(clauseCompiler.Compile(query));
         return new SqlResult(sqlBuilder.ToString(), bindings);

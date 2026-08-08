@@ -11,9 +11,16 @@ public class Query
     public IReadOnlyList<WhereClause> WhereEntries => _whereEntries.AsReadOnly();
     public string FromTable { get; private set; } = string.Empty;
 
+    private readonly IValidator _validator;    
+
+    public Query(): this(new SqlValidator()){}
+    public Query(IValidator validator)
+    {
+        _validator=validator;
+    }
     public Query Select(params string[] columns)
     {
-        if (!Validator.ValidateStringsNotEmpty(columns))
+        if (!_validator.ValidateStringsNotEmpty(columns))
             throw new ArgumentException("Every column must be valid name.");
         
         _selectColumns.Clear();
@@ -23,7 +30,7 @@ public class Query
 
     public Query From(string table)
     {
-        if (!Validator.ValidateStringsNotEmpty(table))
+        if (!_validator.ValidateStringsNotEmpty(table))
             throw new ArgumentException("TableName must be valid name.");
         FromTable = table;
         return this;
@@ -36,7 +43,7 @@ public class Query
 
     public Query Where(string column, string sqlOperator, object value)
     {
-        if (!Validator.ValidateStringsNotEmpty(column))
+        if (!_validator.ValidateStringsNotEmpty(column))
             throw new ArgumentException("ColumnName must be valid name.");
         _whereEntries.Add(new WhereClause(column, sqlOperator, value));
         return this;

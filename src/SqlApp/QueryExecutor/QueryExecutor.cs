@@ -10,12 +10,16 @@ namespace SqlApp.QueryExecutor;
 public class QueryExecutor(DbProviderFactory dbFactory, ICompiler compiler, string connectionString)
     : IQueryExecutor
 {
+    private readonly DbProviderFactory _dbFactory = dbFactory;
+    private readonly ICompiler _compiler = compiler;
+    private readonly string _connectionString = connectionString;
+
     public async Task<DbDataReader> ExecuteQuery(Query query)
     {
-        var queryResult = compiler.Compile(query);
-        var connection = dbFactory.CreateConnection()
+        var queryResult = _compiler.Compile(query);
+        var connection = _dbFactory.CreateConnection()
                          ?? throw new InvalidOperationException($"Cannot create connection for {query}");
-        connection.ConnectionString = connectionString;
+        connection.ConnectionString = _connectionString;
         try
         {
             await connection.OpenAsync();
