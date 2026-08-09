@@ -6,7 +6,7 @@ namespace UnitTests;
 public class ClauseCompilerFactoryTest
 {
     [Fact]
-    public void CreateClauses_Should_ProduceSelectFromWhereInOrder_When_UsingPostgresFactory()
+    public void CreateClauses_ShouldProduceSelectFromWhereInOrder_WhenUsingPostgresFactory()
     {
         // Act
         var sut = new PostgresClauseCompilerFactory().CreateClauses().ToList();
@@ -19,7 +19,7 @@ public class ClauseCompilerFactoryTest
     }
 
     [Fact]
-    public void CreateClauses_Should_ProduceSelectFromWhereInOrder_When_UsingSqlServerFactory()
+    public void CreateClauses_ShouldProduceSelectFromWhereInOrder_WhenUsingSqlServerFactory()
     {
         // Act
         var sut = new SqlServerClauseCompilerFactory().CreateClauses().ToList();
@@ -32,7 +32,7 @@ public class ClauseCompilerFactoryTest
     }
 
     [Fact]
-    public void CreateClauses_Should_ProduceFreshInstances_When_PostgresFactoryCreateClausesIsCalledTwice()
+    public void CreateClauses_ShouldProduceFreshInstances_WhenPostgresFactoryCreateClausesIsCalledTwice()
     {
         // Arrange
         var sut = new PostgresClauseCompilerFactory();
@@ -47,7 +47,7 @@ public class ClauseCompilerFactoryTest
     }
 
     [Fact]
-    public void CreateClauses_Should_ProduceFreshInstances_When_SqlServerFactoryCreateClausesIsCalledTwice()
+    public void CreateClauses_ShouldProduceFreshInstances_WhenSqlServerFactoryCreateClausesIsCalledTwice()
     {
         // Arrange
         var sut = new SqlServerClauseCompilerFactory();

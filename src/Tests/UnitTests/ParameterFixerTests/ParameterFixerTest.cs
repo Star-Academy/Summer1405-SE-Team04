@@ -7,7 +7,7 @@ public class ParameterFixerTest
     [Theory]
     [InlineData("id", "\"id\"")]
     [InlineData("Student", "\"Student\"")]
-    public void WrapIdentifier_Should_WrapInDoubleQuotes_When_UsingPostgresFixer(string identifier, string expected)
+    public void WrapIdentifier_ShouldWrapInDoubleQuotes_WhenUsingPostgresFixer(string identifier, string expected)
     {
         // Act
         var result = PostgresParameterFixer.Instance.WrapIdentifier(identifier);
@@ -19,7 +19,7 @@ public class ParameterFixerTest
     [Theory]
     [InlineData("id", "[id]")]
     [InlineData("Student", "[Student]")]
-    public void WrapIdentifier_Should_WrapInBrackets_When_UsingSqlServerFixer(string identifier, string expected)
+    public void WrapIdentifier_ShouldWrapInBrackets_WhenUsingSqlServerFixer(string identifier, string expected)
     {
         // Act
         var result = SqlServerParameterFixer.Instance.WrapIdentifier(identifier);
@@ -29,7 +29,7 @@ public class ParameterFixerTest
     }
 
     [Fact]
-    public void WrapIdentifier_Should_WrapEmptyValue_When_IdentifierIsEmptyStringInPostgres()
+    public void WrapIdentifier_ShouldWrapEmptyValue_WhenIdentifierIsEmptyStringInPostgres()
     {
         // Act
         var result = PostgresParameterFixer.Instance.WrapIdentifier("");
@@ -39,7 +39,7 @@ public class ParameterFixerTest
     }
 
     [Fact]
-    public void WrapIdentifier_Should_WrapEmptyValue_When_IdentifierIsEmptyStringInSqlServer()
+    public void WrapIdentifier_ShouldWrapEmptyValue_WhenIdentifierIsEmptyStringInSqlServer()
     {
         // Act
         var result = SqlServerParameterFixer.Instance.WrapIdentifier("");
@@ -52,7 +52,7 @@ public class ParameterFixerTest
     [InlineData(0, "@p0")]
     [InlineData(1, "@p1")]
     [InlineData(42, "@p42")]
-    public void FormatParameter_Should_ProduceIndexedPlaceholder_When_UsingPostgresFixer(int index, string expected)
+    public void FormatParameter_ShouldProduceIndexedPlaceholder_WhenUsingPostgresFixer(int index, string expected)
     {
         // Act
         var result = PostgresParameterFixer.Instance.FormatParameter(index);
@@ -65,7 +65,7 @@ public class ParameterFixerTest
     [InlineData(0, "@p0")]
     [InlineData(1, "@p1")]
     [InlineData(42, "@p42")]
-    public void FormatParameter_Should_ProduceIndexedPlaceholder_When_UsingSqlServerFixer(int index, string expected)
+    public void FormatParameter_ShouldProduceIndexedPlaceholder_WhenUsingSqlServerFixer(int index, string expected)
     {
         // Act
         var result = SqlServerParameterFixer.Instance.FormatParameter(index);
@@ -75,7 +75,7 @@ public class ParameterFixerTest
     }
 
     [Fact]
-    public void FormatParameter_Should_ProduceInvalidPlaceholder_When_IndexIsNegative()
+    public void FormatParameter_ShouldProduceInvalidPlaceholder_WhenIndexIsNegative()
     {
         // Act
         var result = PostgresParameterFixer.Instance.FormatParameter(-1);
@@ -85,21 +85,21 @@ public class ParameterFixerTest
     }
 
     [Fact]
-    public void PostgresParameterFixerInstance_Should_ReturnSameSingleton_When_AccessingTwice()
+    public void PostgresParameterFixerInstance_ShouldReturnSameSingleton_WhenAccessingTwice()
     {
         // Act & Assert
         PostgresParameterFixer.Instance.Should().BeSameAs(PostgresParameterFixer.Instance);
     }
 
     [Fact]
-    public void SqlServerParameterFixerInstance_Should_ReturnSameSingleton_When_AccessingTwice()
+    public void SqlServerParameterFixerInstance_ShouldReturnSameSingleton_WhenAccessingTwice()
     {
         // Act & Assert
         SqlServerParameterFixer.Instance.Should().BeSameAs(SqlServerParameterFixer.Instance);
     }
 
     [Fact]
-    public void WrapIdentifier_Should_NotEscapeEmbeddedQuote_When_WrappingIdentifierInPostgres()
+    public void WrapIdentifier_ShouldNotEscapeEmbeddedQuote_WhenWrappingIdentifierInPostgres()
     {
         // Act
         var result = PostgresParameterFixer.Instance.WrapIdentifier("a\"b");
@@ -109,7 +109,7 @@ public class ParameterFixerTest
     }
 
     [Fact]
-    public void WrapIdentifier_Should_NotEscapeEmbeddedBracket_When_WrappingIdentifierInSqlServer()
+    public void WrapIdentifier_ShouldNotEscapeEmbeddedBracket_WhenWrappingIdentifierInSqlServer()
     {
         // Act
         var result = SqlServerParameterFixer.Instance.WrapIdentifier("a]b");
@@ -119,7 +119,7 @@ public class ParameterFixerTest
     }
 
     [Fact]
-    public void WrapIdentifier_Should_PassPayloadThrough_When_IdentifierContainsSqlInjectionPayload()
+    public void WrapIdentifier_ShouldPassPayloadThrough_WhenIdentifierContainsSqlInjectionPayload()
     {
         // Act
         var result = PostgresParameterFixer.Instance.WrapIdentifier("x\"; DROP TABLE y--");

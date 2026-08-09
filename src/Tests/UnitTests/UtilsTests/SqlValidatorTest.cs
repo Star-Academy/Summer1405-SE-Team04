@@ -13,7 +13,7 @@ public class SqlValidatorTest
     }
 
     [Fact]
-    public void ValidateParams_Should_ReturnTrue_When_ParamsContainItems()
+    public void ValidateParams_ShouldReturnTrue_WhenParamsContainItems()
     {
         // Act
         var result = _sut.ValidateParams([1, "a"]);
@@ -23,7 +23,7 @@ public class SqlValidatorTest
     }
 
     [Fact]
-    public void ValidateParams_Should_ReturnFalse_When_ParamsArrayIsEmpty()
+    public void ValidateParams_ShouldReturnFalse_WhenParamsArrayIsEmpty()
     {
         // Act
         var result = _sut.ValidateParams([]);
@@ -33,7 +33,7 @@ public class SqlValidatorTest
     }
 
     [Fact]
-    public void ValidateParams_Should_ReturnTrue_When_ParamsContainNullElement()
+    public void ValidateParams_ShouldReturnTrue_WhenParamsContainNullElement()
     {
         // Act
         var result = _sut.ValidateParams([null!]);
@@ -46,7 +46,7 @@ public class SqlValidatorTest
     [InlineData("a")]
     [InlineData("a", "b")]
     [InlineData("a", "b", "c")]
-    public void ValidateStringsNotEmpty_Should_ReturnTrue_When_AllStringsAreValidNames(params string[] inputs)
+    public void ValidateStringsNotEmpty_ShouldReturnTrue_WhenAllStringsAreValidNames(params string[] inputs)
     {
         // Act
         var result = _sut.ValidateStringsNotEmpty(inputs);
@@ -56,7 +56,7 @@ public class SqlValidatorTest
     }
 
     [Fact]
-    public void ValidateStringsNotEmpty_Should_ReturnFalse_When_NoArgsAreProvided()
+    public void ValidateStringsNotEmpty_ShouldReturnFalse_WhenNoArgsAreProvided()
     {
         // Act
         var result = _sut.ValidateStringsNotEmpty();
@@ -71,7 +71,7 @@ public class SqlValidatorTest
     [InlineData("\t")]
     [InlineData("\n")]
     [InlineData("   ")]
-    public void ValidateStringsNotEmpty_Should_ReturnFalse_When_ValueIsBlank(string input)
+    public void ValidateStringsNotEmpty_ShouldReturnFalse_WhenValueIsBlank(string input)
     {
         // Act
         var result = _sut.ValidateStringsNotEmpty(input);
@@ -81,7 +81,7 @@ public class SqlValidatorTest
     }
 
     [Fact]
-    public void ValidateStringsNotEmpty_Should_ReturnFalse_When_ElementIsNull()
+    public void ValidateStringsNotEmpty_ShouldReturnFalse_WhenElementIsNull()
     {
         // Act
         var result = _sut.ValidateStringsNotEmpty([null!]);
@@ -94,7 +94,7 @@ public class SqlValidatorTest
     [InlineData("a", "")]
     [InlineData("", "a")]
     [InlineData("a", "\t", "b")]
-    public void ValidateStringsNotEmpty_Should_ReturnFalse_When_OneValueIsInvalidAmongValidOnes(params string[] inputs)
+    public void ValidateStringsNotEmpty_ShouldReturnFalse_WhenOneValueIsInvalidAmongValidOnes(params string[] inputs)
     {
         // Act
         var result = _sut.ValidateStringsNotEmpty(inputs);
@@ -104,7 +104,7 @@ public class SqlValidatorTest
     }
 
     [Fact]
-    public void ValidateStringsNotEmpty_Should_ThrowNullReferenceException_When_ArrayIsNull()
+    public void ValidateStringsNotEmpty_ShouldThrowNullReferenceException_WhenArrayIsNull()
     {
         // Act
         var act = () => _sut.ValidateStringsNotEmpty(null!);
@@ -114,7 +114,7 @@ public class SqlValidatorTest
     }
 
     [Fact]
-    public void ValidateQuery_Should_ReturnTrue_When_QueryHasSelectAndFrom()
+    public void ValidateQuery_ShouldReturnTrue_WhenQueryHasSelectAndFrom()
     {
         // Arrange
         var query = new Query().Select("a").From("t");
@@ -127,7 +127,7 @@ public class SqlValidatorTest
     }
 
     [Fact]
-    public void ValidateQuery_Should_ReturnFalse_When_QueryHasNoSelectColumns()
+    public void ValidateQuery_ShouldReturnFalse_WhenQueryHasNoSelectColumns()
     {
         // Arrange
         var query = new Query().From("t");
@@ -140,7 +140,7 @@ public class SqlValidatorTest
     }
 
     [Fact]
-    public void ValidateQuery_Should_ReturnFalse_When_FromTableIsEmpty()
+    public void ValidateQuery_ShouldReturnFalse_WhenFromTableIsEmpty()
     {
         // Arrange
         var query = new Query().Select("a");
@@ -153,7 +153,7 @@ public class SqlValidatorTest
     }
 
     [Fact]
-    public void ValidateQuery_Should_ReturnTrue_When_WhereEntriesHaveInvalidOperators()
+    public void ValidateQuery_ShouldReturnTrue_WhenWhereEntriesHaveInvalidOperators()
     {
         // Arrange
         var query = new Query().Select("a").From("t").Where("c", "BOGUS OP", 1);
@@ -166,7 +166,7 @@ public class SqlValidatorTest
     }
 
     [Fact]
-    public void ValidateQuery_Should_ThrowNullReferenceException_When_QueryIsNull()
+    public void ValidateQuery_ShouldThrowNullReferenceException_WhenQueryIsNull()
     {
         // Act
         var act = () => _sut.ValidateQuery(null!);

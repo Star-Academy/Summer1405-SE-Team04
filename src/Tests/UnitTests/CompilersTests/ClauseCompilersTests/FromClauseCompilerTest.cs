@@ -18,7 +18,7 @@ public class FromClauseCompilerTest
     }
 
     [Fact]
-    public void Compile_Should_ProduceFromWithLeadingSpace_When_TableIsSpecified()
+    public void Compile_ShouldProduceFromWithLeadingSpace_WhenTableIsSpecified()
     {
         // Arrange
         var query = new Query().From("Student");
@@ -31,7 +31,7 @@ public class FromClauseCompilerTest
     }
 
     [Fact]
-    public void Compile_Should_WrapTableIdentifier_When_Compiling()
+    public void Compile_ShouldWrapTableIdentifier_WhenCompiling()
     {
         // Arrange
         var query = new Query().From("Student");

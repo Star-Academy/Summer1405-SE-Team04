@@ -9,7 +9,7 @@ namespace UnitTests;
 public class CompilerIntegrationTest
 {
     [Fact]
-    public void Compile_Should_ProduceDoubleQuotedSql_When_CompilingFullQueryWithPostgresFactory()
+    public void Compile_ShouldProduceDoubleQuotedSql_WhenCompilingFullQueryWithPostgresFactory()
     {
         // Arrange
         var sut = new Compiler(PostgresParameterFixer.Instance, new PostgresClauseCompilerFactory(), new SqlValidator());
@@ -23,7 +23,7 @@ public class CompilerIntegrationTest
     }
 
     [Fact]
-    public void Compile_Should_ProduceBracketedSql_When_CompilingFullQueryWithSqlServerFactory()
+    public void Compile_ShouldProduceBracketedSql_WhenCompilingFullQueryWithSqlServerFactory()
     {
         // Arrange
         var sut = new Compiler(SqlServerParameterFixer.Instance, new SqlServerClauseCompilerFactory(), new SqlValidator());
@@ -37,7 +37,7 @@ public class CompilerIntegrationTest
     }
 
     [Fact]
-    public void Compile_Should_ProduceBindingsMatchingSqlPlaceholders_When_CompilingFullQueryWithPostgresFactory()
+    public void Compile_ShouldProduceBindingsMatchingSqlPlaceholders_WhenCompilingFullQueryWithPostgresFactory()
     {
         // Arrange
         var sut = new Compiler(PostgresParameterFixer.Instance, new PostgresClauseCompilerFactory(), new SqlValidator());

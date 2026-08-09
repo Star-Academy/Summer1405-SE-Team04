@@ -18,7 +18,7 @@ public class SelectClauseCompilerTest
     }
 
     [Fact]
-    public void Compile_Should_ProduceSelectWithoutLeadingSpace_When_SelectingSingleColumn()
+    public void Compile_ShouldProduceSelectWithoutLeadingSpace_WhenSelectingSingleColumn()
     {
         // Arrange
         var query = new Query().Select("A");
@@ -31,7 +31,7 @@ public class SelectClauseCompilerTest
     }
 
     [Fact]
-    public void Compile_Should_JoinColumnsWithCommaSpace_When_SelectingMultipleColumns()
+    public void Compile_ShouldJoinColumnsWithCommaSpace_WhenSelectingMultipleColumns()
     {
         // Arrange
         var query = new Query().Select("A", "B", "C");
@@ -44,7 +44,7 @@ public class SelectClauseCompilerTest
     }
 
     [Fact]
-    public void Compile_Should_ProduceSelectWithTrailingSpace_When_NoColumnsAreSelected()
+    public void Compile_ShouldProduceSelectWithTrailingSpace_WhenNoColumnsAreSelected()
     {
         // Arrange
         var query = new Query();
@@ -57,7 +57,7 @@ public class SelectClauseCompilerTest
     }
 
     [Fact]
-    public void Compile_Should_WrapEveryColumnIdentifier_When_Compiling()
+    public void Compile_ShouldWrapEveryColumnIdentifier_WhenCompiling()
     {
         // Arrange
         var query = new Query().Select("A", "B");
@@ -71,7 +71,7 @@ public class SelectClauseCompilerTest
     }
 
     [Fact]
-    public void Compile_Should_EmitBothColumns_When_ColumnsAreDuplicated()
+    public void Compile_ShouldEmitBothColumns_WhenColumnsAreDuplicated()
     {
         // Arrange
         var query = new Query().Select("A", "A");
