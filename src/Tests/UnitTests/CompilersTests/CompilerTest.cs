@@ -1,18 +1,18 @@
-using QueryBuilder.Models;
 using QueryBuilder.Compilers;
 using QueryBuilder.Compilers.ClauseCompilers;
 using QueryBuilder.Factory;
+using QueryBuilder.Models;
 using QueryBuilder.ParameterFixer;
 using QueryBuilder.Utils;
 
-namespace UnitTests;
+namespace UnitTests.CompilersTests;
 
 public class CompilerTest
 {
-    private readonly ICompiler _sut;
     private readonly IClauseCompilerFactory _factoryMock;
-    private readonly IValidator _validatorMock;
     private readonly IParameterFixer _parameterFixerMock;
+    private readonly ICompiler _sut;
+    private readonly IValidator _validatorMock;
 
     public CompilerTest()
     {
@@ -80,7 +80,7 @@ public class CompilerTest
 
         // Assert
         sqlString.Should().Be("SELECT FROM WHERE");
-        bindings.Should().Equal([("0", 10), ("1", true)]);
+        bindings.Should().Equal(("0", 10), ("1", true));
     }
 
     [Fact]
@@ -186,7 +186,7 @@ public class CompilerTest
 
         // Assert
         sqlString.Should().Be("");
-        bindings.Should().Equal([("0", (object)10)]);
+        bindings.Should().Equal(("0", 10));
     }
 
     [Fact]

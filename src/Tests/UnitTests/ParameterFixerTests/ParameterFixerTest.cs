@@ -1,6 +1,6 @@
 using QueryBuilder.ParameterFixer;
 
-namespace UnitTests;
+namespace UnitTests.ParameterFixerTests;
 
 public class ParameterFixerTest
 {

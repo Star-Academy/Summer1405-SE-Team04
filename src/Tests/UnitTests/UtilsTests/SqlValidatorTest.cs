@@ -1,7 +1,7 @@
 using QueryBuilder.Models;
 using QueryBuilder.Utils;
 
-namespace UnitTests;
+namespace UnitTests.UtilsTests;
 
 public class SqlValidatorTest
 {

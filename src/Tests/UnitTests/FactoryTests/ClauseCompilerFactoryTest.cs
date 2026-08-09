@@ -1,7 +1,7 @@
 using QueryBuilder.Compilers.ClauseCompilers;
 using QueryBuilder.Factory;
 
-namespace UnitTests;
+namespace UnitTests.FactoryTests;
 
 public class ClauseCompilerFactoryTest
 {

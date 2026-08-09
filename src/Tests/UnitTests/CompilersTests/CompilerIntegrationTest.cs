@@ -4,7 +4,7 @@ using QueryBuilder.Models;
 using QueryBuilder.ParameterFixer;
 using QueryBuilder.Utils;
 
-namespace UnitTests;
+namespace UnitTests.CompilersTests;
 
 public class CompilerIntegrationTest
 {
@@ -12,7 +12,8 @@ public class CompilerIntegrationTest
     public void Compile_ShouldProduceDoubleQuotedSql_WhenCompilingFullQueryWithPostgresFactory()
     {
         // Arrange
-        var sut = new Compiler(PostgresParameterFixer.Instance, new PostgresClauseCompilerFactory(), new SqlValidator());
+        var sut = new Compiler(PostgresParameterFixer.Instance, new PostgresClauseCompilerFactory(),
+            new SqlValidator());
         var query = new Query().Select("FirstName", "Age").From("Student").Where("Age", ">", 10).Where("IsMale", true);
 
         // Act
@@ -26,7 +27,8 @@ public class CompilerIntegrationTest
     public void Compile_ShouldProduceBracketedSql_WhenCompilingFullQueryWithSqlServerFactory()
     {
         // Arrange
-        var sut = new Compiler(SqlServerParameterFixer.Instance, new SqlServerClauseCompilerFactory(), new SqlValidator());
+        var sut = new Compiler(SqlServerParameterFixer.Instance, new SqlServerClauseCompilerFactory(),
+            new SqlValidator());
         var query = new Query().Select("FirstName", "Age").From("Student").Where("Age", ">", 10).Where("IsMale", true);
 
         // Act
@@ -40,7 +42,8 @@ public class CompilerIntegrationTest
     public void Compile_ShouldProduceBindingsMatchingSqlPlaceholders_WhenCompilingFullQueryWithPostgresFactory()
     {
         // Arrange
-        var sut = new Compiler(PostgresParameterFixer.Instance, new PostgresClauseCompilerFactory(), new SqlValidator());
+        var sut = new Compiler(PostgresParameterFixer.Instance, new PostgresClauseCompilerFactory(),
+            new SqlValidator());
         var query = new Query().Select("FirstName", "Age").From("Student").Where("Age", ">", 10).Where("IsMale", true);
 
         // Act

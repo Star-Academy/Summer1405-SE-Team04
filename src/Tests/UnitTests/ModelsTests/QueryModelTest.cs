@@ -1,7 +1,7 @@
 using QueryBuilder.Models;
 using QueryBuilder.Utils;
 
-namespace UnitTests;
+namespace UnitTests.ModelsTests;
 
 public class QueryModelTest
 {
@@ -9,7 +9,8 @@ public class QueryModelTest
     [InlineData("Every column must be valid name.")]
     [InlineData("Every column must be valid name.", "")]
     [InlineData("Every column must be valid name.", "a", "\t")]
-    public void Select_ShouldThrowArgumentException_WhenSelectArgsAreEmpty(string expectedMessage, params string[] inputs)
+    public void Select_ShouldThrowArgumentException_WhenSelectArgsAreEmpty(string expectedMessage,
+        params string[] inputs)
     {
         // Arrange
         var query = new Query();
@@ -72,11 +73,11 @@ public class QueryModelTest
 
         // Assert
         var expectedClauses = new[]
-           {
-                new WhereClause("c1", "=", 10),
-                new WhereClause("c2", "=", true),
-                new WhereClause("c3", "=", "Ali")
-           };
+        {
+            new WhereClause("c1", "=", 10),
+            new WhereClause("c2", "=", true),
+            new WhereClause("c3", "=", "Ali")
+        };
         query.WhereEntries.Should().Equal(expectedClauses);
     }
 
