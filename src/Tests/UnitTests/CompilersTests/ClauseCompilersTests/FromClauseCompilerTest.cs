@@ -6,15 +6,15 @@ namespace UnitTests.CompilersTests.ClauseCompilersTests;
 
 public class FromClauseCompilerTest
 {
-    private readonly IParameterFixer _parameterFixerMock;
+    private readonly IParameterFixer _parameterFixer;
     private readonly FromClauseCompiler _sut;
 
     public FromClauseCompilerTest()
     {
-        _parameterFixerMock = Substitute.For<IParameterFixer>();
-        _parameterFixerMock.WrapIdentifier(Arg.Any<string>()).Returns(x => x.Arg<string>());
+        _parameterFixer = Substitute.For<IParameterFixer>();
+        _parameterFixer.WrapIdentifier(Arg.Any<string>()).Returns(x => x.Arg<string>());
 
-        _sut = new FromClauseCompiler(_parameterFixerMock);
+        _sut = new FromClauseCompiler(_parameterFixer);
     }
 
     [Fact]
@@ -40,6 +40,6 @@ public class FromClauseCompilerTest
         _sut.Compile(query);
 
         // Assert
-        _parameterFixerMock.Received(1).WrapIdentifier("Student");
+        _parameterFixer.Received(1).WrapIdentifier("Student");
     }
 }

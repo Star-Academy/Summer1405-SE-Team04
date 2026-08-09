@@ -194,9 +194,9 @@ public class QueryModelTest
     public void Select_ShouldThrowArgumentException_WhenInjectedValidatorRejectsColumns()
     {
         // Arrange
-        var validatorMock = Substitute.For<IValidator>();
-        validatorMock.ValidateStringsNotEmpty(Arg.Any<string[]>()).Returns(false);
-        var query = new Query(validatorMock);
+        var validator = Substitute.For<IValidator>();
+        validator.ValidateStringsNotEmpty(Arg.Any<string[]>()).Returns(false);
+        var query = new Query(validator);
 
         // Act
         var act = () => query.Select("PerfectlyValidName");
@@ -209,15 +209,15 @@ public class QueryModelTest
     public void Select_ShouldReceiveSelectColumns_WhenValidatorIsInjected()
     {
         // Arrange
-        var validatorMock = Substitute.For<IValidator>();
-        validatorMock.ValidateStringsNotEmpty(Arg.Any<string[]>()).Returns(true);
-        var query = new Query(validatorMock);
+        var validator = Substitute.For<IValidator>();
+        validator.ValidateStringsNotEmpty(Arg.Any<string[]>()).Returns(true);
+        var query = new Query(validator);
 
         // Act
         query.Select("A", "B");
 
         // Assert
-        validatorMock.Received(1).ValidateStringsNotEmpty("A", "B");
+        validator.Received(1).ValidateStringsNotEmpty("A", "B");
     }
 
     [Fact]

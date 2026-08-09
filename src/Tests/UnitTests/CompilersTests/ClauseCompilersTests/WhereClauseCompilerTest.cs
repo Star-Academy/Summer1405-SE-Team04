@@ -6,16 +6,16 @@ namespace UnitTests.CompilersTests.ClauseCompilersTests;
 
 public class WhereClauseCompilerTest
 {
-    private readonly IParameterFixer _parameterFixerMock;
+    private readonly IParameterFixer _parameterFixer;
     private readonly WhereClauseCompiler _sut;
 
     public WhereClauseCompilerTest()
     {
-        _parameterFixerMock = Substitute.For<IParameterFixer>();
-        _parameterFixerMock.WrapIdentifier(Arg.Any<string>()).Returns(x => x.Arg<string>());
-        _parameterFixerMock.FormatParameter(Arg.Any<int>()).Returns(x => x.Arg<int>().ToString());
+        _parameterFixer = Substitute.For<IParameterFixer>();
+        _parameterFixer.WrapIdentifier(Arg.Any<string>()).Returns(x => x.Arg<string>());
+        _parameterFixer.FormatParameter(Arg.Any<int>()).Returns(x => x.Arg<int>().ToString());
 
-        _sut = new WhereClauseCompiler(_parameterFixerMock);
+        _sut = new WhereClauseCompiler(_parameterFixer);
     }
 
     [Fact]
@@ -85,8 +85,8 @@ public class WhereClauseCompilerTest
         _sut.Compile(query);
 
         // Assert
-        _parameterFixerMock.Received(1).FormatParameter(0);
-        _parameterFixerMock.Received(1).FormatParameter(1);
+        _parameterFixer.Received(1).FormatParameter(0);
+        _parameterFixer.Received(1).FormatParameter(1);
     }
 
     [Fact]
@@ -112,6 +112,6 @@ public class WhereClauseCompilerTest
         _sut.Compile(query);
 
         // Assert
-        _parameterFixerMock.DidNotReceive().FormatParameter(Arg.Any<int>());
+        _parameterFixer.DidNotReceive().FormatParameter(Arg.Any<int>());
     }
 }

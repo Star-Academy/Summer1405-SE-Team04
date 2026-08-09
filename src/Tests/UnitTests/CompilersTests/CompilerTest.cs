@@ -9,34 +9,34 @@ namespace UnitTests.CompilersTests;
 
 public class CompilerTest
 {
-    private readonly IClauseCompilerFactory _factoryMock;
-    private readonly IParameterFixer _parameterFixerMock;
+    private readonly IClauseCompilerFactory _factory;
+    private readonly IParameterFixer _parameterFixer;
     private readonly ICompiler _sut;
-    private readonly IValidator _validatorMock;
+    private readonly IValidator _validator;
 
     public CompilerTest()
     {
-        _parameterFixerMock = Substitute.For<IParameterFixer>();
-        _parameterFixerMock.FormatParameter(Arg.Any<int>()).Returns(x => x.Arg<int>().ToString());
+        _parameterFixer = Substitute.For<IParameterFixer>();
+        _parameterFixer.FormatParameter(Arg.Any<int>()).Returns(x => x.Arg<int>().ToString());
 
-        var selectClauseCompilerMock = Substitute.For<IClauseCompiler>();
-        var fromClauseCompilerMock = Substitute.For<IClauseCompiler>();
-        var whereClauseCompilerMock = Substitute.For<IClauseCompiler>();
-        selectClauseCompilerMock.Compile(Arg.Any<Query>()).Returns("SELECT");
-        fromClauseCompilerMock.Compile(Arg.Any<Query>()).Returns("FROM");
-        whereClauseCompilerMock.Compile(Arg.Any<Query>()).Returns("WHERE");
+        var selectClauseCompiler = Substitute.For<IClauseCompiler>();
+        var fromClauseCompiler = Substitute.For<IClauseCompiler>();
+        var whereClauseCompiler = Substitute.For<IClauseCompiler>();
+        selectClauseCompiler.Compile(Arg.Any<Query>()).Returns("SELECT");
+        fromClauseCompiler.Compile(Arg.Any<Query>()).Returns("FROM");
+        whereClauseCompiler.Compile(Arg.Any<Query>()).Returns("WHERE");
 
-        _factoryMock = Substitute.For<IClauseCompilerFactory>();
-        _factoryMock.CreateClauses().Returns([
-            selectClauseCompilerMock,
-            fromClauseCompilerMock,
-            whereClauseCompilerMock
+        _factory = Substitute.For<IClauseCompilerFactory>();
+        _factory.CreateClauses().Returns([
+            selectClauseCompiler,
+            fromClauseCompiler,
+            whereClauseCompiler
         ]);
 
-        _validatorMock = Substitute.For<IValidator>();
-        _validatorMock.ValidateQuery(Arg.Any<Query>()).Returns(true);
+        _validator = Substitute.For<IValidator>();
+        _validator.ValidateQuery(Arg.Any<Query>()).Returns(true);
 
-        _sut = new Compiler(_parameterFixerMock, _factoryMock, _validatorMock);
+        _sut = new Compiler(_parameterFixer, _factory, _validator);
     }
 
     [Fact]
@@ -49,7 +49,7 @@ public class CompilerTest
         _sut.Compile(query);
 
         // Assert
-        _validatorMock.Received(1).ValidateQuery(query);
+        _validator.Received(1).ValidateQuery(query);
     }
 
     [Fact]
@@ -62,7 +62,7 @@ public class CompilerTest
         _sut.Compile(query);
 
         // Assert
-        _validatorMock.Received(1).ValidateQuery(query);
+        _validator.Received(1).ValidateQuery(query);
     }
 
     [Fact]
@@ -87,7 +87,7 @@ public class CompilerTest
     public void Compile_ShouldThrowInvalidOperationException_WhenQueryIsInvalid()
     {
         // Arrange
-        _validatorMock.ValidateQuery(Arg.Any<Query>()).Returns(false);
+        _validator.ValidateQuery(Arg.Any<Query>()).Returns(false);
         var query = new Query();
 
         // Act
@@ -101,10 +101,10 @@ public class CompilerTest
     public void Compile_ShouldNotInvokeClauseCompilers_WhenQueryIsInvalid()
     {
         // Arrange
-        _validatorMock.ValidateQuery(Arg.Any<Query>()).Returns(false);
-        var clauseCompilerMock = Substitute.For<IClauseCompiler>();
-        _factoryMock.CreateClauses().Returns([clauseCompilerMock]);
-        var sut = new Compiler(_parameterFixerMock, _factoryMock, _validatorMock);
+        _validator.ValidateQuery(Arg.Any<Query>()).Returns(false);
+        var clauseCompiler = Substitute.For<IClauseCompiler>();
+        _factory.CreateClauses().Returns([clauseCompiler]);
+        var sut = new Compiler(_parameterFixer, _factory, _validator);
         var query = new Query();
 
         // Act
@@ -112,14 +112,14 @@ public class CompilerTest
 
         // Assert
         act.Should().Throw<InvalidOperationException>();
-        clauseCompilerMock.DidNotReceive().Compile(Arg.Any<Query>());
+        clauseCompiler.DidNotReceive().Compile(Arg.Any<Query>());
     }
 
     [Fact]
     public void Compile_ShouldThrowArgumentNullException_WhenParameterFixerIsNull()
     {
         // Act
-        var act = () => new Compiler(null!, _factoryMock, _validatorMock);
+        var act = () => new Compiler(null!, _factory, _validator);
 
         // Assert
         act.Should().Throw<ArgumentNullException>().WithParameterName("parameterFixer");
@@ -129,7 +129,7 @@ public class CompilerTest
     public void Compile_ShouldThrowArgumentNullException_WhenValidatorIsNull()
     {
         // Act
-        var act = () => new Compiler(_parameterFixerMock, _factoryMock, null!);
+        var act = () => new Compiler(_parameterFixer, _factory, null!);
 
         // Assert
         act.Should().Throw<ArgumentNullException>().WithParameterName("validator");
@@ -139,10 +139,10 @@ public class CompilerTest
     public void Compile_ShouldThrowArgumentNullException_WhenFactoryReturnsNullClauses()
     {
         // Arrange
-        _factoryMock.CreateClauses().Returns((IEnumerable<IClauseCompiler>)null!);
+        _factory.CreateClauses().Returns((IEnumerable<IClauseCompiler>)null!);
 
         // Act
-        var act = () => new Compiler(_parameterFixerMock, _factoryMock, _validatorMock);
+        var act = () => new Compiler(_parameterFixer, _factory, _validator);
 
         // Assert
         act.Should().Throw<ArgumentNullException>().WithParameterName("clauseCompilers");
@@ -152,7 +152,7 @@ public class CompilerTest
     public void Compile_ShouldThrowNullReferenceException_WhenFactoryIsNull()
     {
         // Act
-        var act = () => new Compiler(_parameterFixerMock, null!, _validatorMock);
+        var act = () => new Compiler(_parameterFixer, null!, _validator);
 
         // Assert
         act.Should().Throw<NullReferenceException>();
@@ -162,7 +162,7 @@ public class CompilerTest
     public void Compile_ShouldStillFormatParameters_WhenQueryIsInvalid()
     {
         // Arrange
-        _validatorMock.ValidateQuery(Arg.Any<Query>()).Returns(false);
+        _validator.ValidateQuery(Arg.Any<Query>()).Returns(false);
         var query = new Query().Where("Age", 10);
 
         // Act
@@ -170,15 +170,15 @@ public class CompilerTest
 
         // Assert
         act.Should().Throw<InvalidOperationException>();
-        _parameterFixerMock.Received(1).FormatParameter(0);
+        _parameterFixer.Received(1).FormatParameter(0);
     }
 
     [Fact]
     public void Compile_ShouldProduceEmptySqlWithBindings_WhenClauseCompilerListIsEmpty()
     {
         // Arrange
-        _factoryMock.CreateClauses().Returns([]);
-        var sut = new Compiler(_parameterFixerMock, _factoryMock, _validatorMock);
+        _factory.CreateClauses().Returns([]);
+        var sut = new Compiler(_parameterFixer, _factory, _validator);
         var query = new Query().Where("Age", 10);
 
         // Act
@@ -195,21 +195,21 @@ public class CompilerTest
         // Arrange
         var query = new Query().Select("A").From("T").Where("C", 1);
 
-        var whereClauseCompilerMock = Substitute.For<IClauseCompiler>();
-        var fromClauseCompilerMock = Substitute.For<IClauseCompiler>();
-        var selectClauseCompilerMock = Substitute.For<IClauseCompiler>();
+        var whereClauseCompiler = Substitute.For<IClauseCompiler>();
+        var fromClauseCompiler = Substitute.For<IClauseCompiler>();
+        var selectClauseCompiler = Substitute.For<IClauseCompiler>();
 
-        whereClauseCompilerMock.Compile(query).Returns("WHERE C = 0");
-        fromClauseCompilerMock.Compile(query).Returns("FROM T");
-        selectClauseCompilerMock.Compile(query).Returns("SELECT A");
+        whereClauseCompiler.Compile(query).Returns("WHERE C = 0");
+        fromClauseCompiler.Compile(query).Returns("FROM T");
+        selectClauseCompiler.Compile(query).Returns("SELECT A");
 
-        _factoryMock.CreateClauses().Returns([
-            whereClauseCompilerMock,
-            fromClauseCompilerMock,
-            selectClauseCompilerMock
+        _factory.CreateClauses().Returns([
+            whereClauseCompiler,
+            fromClauseCompiler,
+            selectClauseCompiler
         ]);
 
-        var sut = new Compiler(_parameterFixerMock, _factoryMock, _validatorMock);
+        var sut = new Compiler(_parameterFixer, _factory, _validator);
 
         // Act
         var (sqlString, _) = sut.Compile(query);
@@ -222,20 +222,20 @@ public class CompilerTest
     public void Compile_ShouldInvokeEachClauseCompilerExactlyOnce_WhenCompilingAQuery()
     {
         // Arrange
-        var firstClauseMock = Substitute.For<IClauseCompiler>();
-        var secondClauseMock = Substitute.For<IClauseCompiler>();
-        var thirdClauseMock = Substitute.For<IClauseCompiler>();
-        _factoryMock.CreateClauses().Returns([firstClauseMock, secondClauseMock, thirdClauseMock]);
-        var sut = new Compiler(_parameterFixerMock, _factoryMock, _validatorMock);
+        var firstClause = Substitute.For<IClauseCompiler>();
+        var secondClause = Substitute.For<IClauseCompiler>();
+        var thirdClause = Substitute.For<IClauseCompiler>();
+        _factory.CreateClauses().Returns([firstClause, secondClause, thirdClause]);
+        var sut = new Compiler(_parameterFixer, _factory, _validator);
         var query = new Query();
 
         // Act
         sut.Compile(query);
 
         // Assert
-        firstClauseMock.Received(1).Compile(query);
-        secondClauseMock.Received(1).Compile(query);
-        thirdClauseMock.Received(1).Compile(query);
+        firstClause.Received(1).Compile(query);
+        secondClause.Received(1).Compile(query);
+        thirdClause.Received(1).Compile(query);
     }
 
     [Fact]
@@ -258,7 +258,7 @@ public class CompilerTest
         _sut.Compile(query);
 
         // Assert
-        _parameterFixerMock.DidNotReceive().FormatParameter(Arg.Any<int>());
+        _parameterFixer.DidNotReceive().FormatParameter(Arg.Any<int>());
     }
 
     [Fact]

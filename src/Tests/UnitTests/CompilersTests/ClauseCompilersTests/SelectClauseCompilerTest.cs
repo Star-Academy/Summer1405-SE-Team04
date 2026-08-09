@@ -6,15 +6,15 @@ namespace UnitTests.CompilersTests.ClauseCompilersTests;
 
 public class SelectClauseCompilerTest
 {
-    private readonly IParameterFixer _parameterFixerMock;
+    private readonly IParameterFixer _parameterFixer;
     private readonly SelectClauseCompiler _sut;
 
     public SelectClauseCompilerTest()
     {
-        _parameterFixerMock = Substitute.For<IParameterFixer>();
-        _parameterFixerMock.WrapIdentifier(Arg.Any<string>()).Returns(x => x.Arg<string>());
+        _parameterFixer = Substitute.For<IParameterFixer>();
+        _parameterFixer.WrapIdentifier(Arg.Any<string>()).Returns(x => x.Arg<string>());
 
-        _sut = new SelectClauseCompiler(_parameterFixerMock);
+        _sut = new SelectClauseCompiler(_parameterFixer);
     }
 
     [Fact]
@@ -66,8 +66,8 @@ public class SelectClauseCompilerTest
         _sut.Compile(query);
 
         // Assert
-        _parameterFixerMock.Received(1).WrapIdentifier("A");
-        _parameterFixerMock.Received(1).WrapIdentifier("B");
+        _parameterFixer.Received(1).WrapIdentifier("A");
+        _parameterFixer.Received(1).WrapIdentifier("B");
     }
 
     [Fact]
