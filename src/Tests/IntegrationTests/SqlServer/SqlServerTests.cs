@@ -19,7 +19,7 @@ public class SqlServerTest : IClassFixture<SqlServerFixture>
     }
 
     [Fact]
-    public async Task Execute_Should_ReturnAll_When_SelectAllRows()
+    public async Task Execute_ShouldReturnAll_WhenSelectAllRows()
     {
         //Arrange
         var query = new Query().Select("ID", "FirstName", "IsMale", "Age").From("Student");
@@ -50,7 +50,7 @@ public class SqlServerTest : IClassFixture<SqlServerFixture>
     }
 
     [Fact]
-    public async Task Execute_Should_ReturnAllColumns_When_WhereNameIsAli()
+    public async Task Execute_ShouldReturnAllColumns_WhenWhereNameIsAli()
     {
         //Arrange
         var query = new Query().Select("ID", "FirstName", "IsMale", "Age").From("Student").Where("FirstName", "Ali");
@@ -75,7 +75,7 @@ public class SqlServerTest : IClassFixture<SqlServerFixture>
         (await reader.ReadAsync()).Should().BeFalse();
     }
     [Fact]
-    public async Task Execute_Should_ReturnSara_When_WhereAgeIsBiggerThan30()
+    public async Task Execute_ShouldReturnSara_WhenWhereAgeIsBiggerThan30()
     {
         //Arrange
         var query = new Query().Select("ID", "FirstName").From("Student").Where("Age", ">", 30);
@@ -98,7 +98,7 @@ public class SqlServerTest : IClassFixture<SqlServerFixture>
     }
 
     [Fact]
-    public async Task Execute_Should_ReturnNoRows_When_NoStudentMatches()
+    public async Task Execute_ShouldReturnNoRows_WhenNoStudentMatches()
     {
         //Arrage
         var query = new Query().Select("ID", "FirstName").From("Student").Where("Age", ">", 100);
