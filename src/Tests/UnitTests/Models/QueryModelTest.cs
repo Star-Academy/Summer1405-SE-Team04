@@ -1,7 +1,7 @@
 using QueryBuilder.Models;
 using QueryBuilder.Utils;
 
-namespace UnitTests.ModelsTests;
+namespace UnitTests.Models;
 
 public class QueryModelTest
 {

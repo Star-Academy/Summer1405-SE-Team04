@@ -2,7 +2,7 @@ using QueryBuilder.Compilers.ClauseCompilers;
 using QueryBuilder.Models;
 using QueryBuilder.ParameterFixer;
 
-namespace UnitTests.CompilersTests.ClauseCompilersTests;
+namespace UnitTests.Compilers.ClauseCompilers;
 
 public class WhereClauseCompilerTest
 {

@@ -5,7 +5,7 @@ using QueryBuilder.Models;
 using QueryBuilder.ParameterFixer;
 using QueryBuilder.Utils;
 
-namespace UnitTests.CompilersTests;
+namespace UnitTests.Compilers;
 
 public class CompilerTest
 {

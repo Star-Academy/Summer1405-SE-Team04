@@ -1,15 +1,15 @@
 using QueryBuilder.ParameterFixer;
 
-namespace UnitTests.ParameterFixerTests;
+namespace UnitTests.ParameterFixer;
 
-public class PostgresParameterFixerTest
+public class SqlServerParameterFixerTest
 {
-    private readonly PostgresParameterFixer _sut = PostgresParameterFixer.Instance;
+    private readonly SqlServerParameterFixer _sut = SqlServerParameterFixer.Instance;
 
     [Theory]
-    [InlineData("id", "\"id\"")]
-    [InlineData("Student", "\"Student\"")]
-    public void WrapIdentifier_ShouldWrapInDoubleQuotes_WhenIdentifierIsSimple(string identifier, string expected)
+    [InlineData("id", "[id]")]
+    [InlineData("Student", "[Student]")]
+    public void WrapIdentifier_ShouldWrapInBrackets_WhenIdentifierIsSimple(string identifier, string expected)
     {
         // Act
         var result = _sut.WrapIdentifier(identifier);
@@ -25,27 +25,27 @@ public class PostgresParameterFixerTest
         var result = _sut.WrapIdentifier("");
 
         // Assert
-        result.Should().Be("\"\"");
+        result.Should().Be("[]");
     }
 
     [Fact]
-    public void WrapIdentifier_ShouldNotEscapeEmbeddedQuote_WhenIdentifierContainsDoubleQuote()
+    public void WrapIdentifier_ShouldNotEscapeEmbeddedBracket_WhenIdentifierContainsClosingBracket()
     {
         // Act
-        var result = _sut.WrapIdentifier("a\"b");
+        var result = _sut.WrapIdentifier("a]b");
 
         // Assert
-        result.Should().Be("\"a\"b\"");
+        result.Should().Be("[a]b]");
     }
 
     [Fact]
     public void WrapIdentifier_ShouldPassPayloadThrough_WhenIdentifierContainsSqlInjectionPayload()
     {
         // Act
-        var result = _sut.WrapIdentifier("x\"; DROP TABLE y--");
+        var result = _sut.WrapIdentifier("x]; DROP TABLE y--");
 
         // Assert
-        result.Should().Be("\"x\"; DROP TABLE y--\"");
+        result.Should().Be("[x]; DROP TABLE y--]");
     }
 
     [Fact]
@@ -85,6 +85,6 @@ public class PostgresParameterFixerTest
     public void Instance_ShouldReturnSameSingleton_WhenAccessedTwice()
     {
         // Act & Assert
-        PostgresParameterFixer.Instance.Should().BeSameAs(PostgresParameterFixer.Instance);
+        SqlServerParameterFixer.Instance.Should().BeSameAs(SqlServerParameterFixer.Instance);
     }
 }

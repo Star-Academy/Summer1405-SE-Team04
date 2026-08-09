@@ -1,19 +1,19 @@
 using QueryBuilder.Compilers.ClauseCompilers;
 using QueryBuilder.Factory;
 
-namespace UnitTests.FactoryTests;
+namespace UnitTests.Factory;
 
-public class SqlServerClauseCompilerFactoryTest
+public class PostgresClauseCompilerFactoryTest
 {
-    private readonly SqlServerClauseCompilerFactory _sut;
+    private readonly PostgresClauseCompilerFactory _sut;
 
-    public SqlServerClauseCompilerFactoryTest()
+    public PostgresClauseCompilerFactoryTest()
     {
-        _sut = new SqlServerClauseCompilerFactory();
+        _sut = new PostgresClauseCompilerFactory();
     }
 
     [Fact]
-    public void CreateClauses_ShouldProduceSelectFromWhereInOrder_WhenUsingSqlServerFactory()
+    public void CreateClauses_ShouldProduceSelectFromWhereInOrder_WhenUsingPostgresFactory()
     {
         // Act
         var result = _sut.CreateClauses().ToList();
