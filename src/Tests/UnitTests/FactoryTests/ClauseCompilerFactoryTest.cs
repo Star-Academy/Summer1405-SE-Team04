@@ -9,26 +9,26 @@ public class ClauseCompilerFactoryTest
     public void CreateClauses_Should_ProduceSelectFromWhereInOrder_When_UsingPostgresFactory()
     {
         // Act
-        var clauses = new PostgresClauseCompilerFactory().CreateClauses().ToList();
+        var sut = new PostgresClauseCompilerFactory().CreateClauses().ToList();
 
         // Assert
-        clauses.Should().HaveCount(3);
-        clauses[0].Should().BeOfType<SelectClauseCompiler>();
-        clauses[1].Should().BeOfType<FromClauseCompiler>();
-        clauses[2].Should().BeOfType<WhereClauseCompiler>();
+        sut.Should().HaveCount(3);
+        sut[0].Should().BeOfType<SelectClauseCompiler>();
+        sut[1].Should().BeOfType<FromClauseCompiler>();
+        sut[2].Should().BeOfType<WhereClauseCompiler>();
     }
 
     [Fact]
     public void CreateClauses_Should_ProduceSelectFromWhereInOrder_When_UsingSqlServerFactory()
     {
         // Act
-        var clauses = new SqlServerClauseCompilerFactory().CreateClauses().ToList();
+        var sut = new SqlServerClauseCompilerFactory().CreateClauses().ToList();
 
         // Assert
-        clauses.Should().HaveCount(3);
-        clauses[0].Should().BeOfType<SelectClauseCompiler>();
-        clauses[1].Should().BeOfType<FromClauseCompiler>();
-        clauses[2].Should().BeOfType<WhereClauseCompiler>();
+        sut.Should().HaveCount(3);
+        sut[0].Should().BeOfType<SelectClauseCompiler>();
+        sut[1].Should().BeOfType<FromClauseCompiler>();
+        sut[2].Should().BeOfType<WhereClauseCompiler>();
     }
 
     [Fact]

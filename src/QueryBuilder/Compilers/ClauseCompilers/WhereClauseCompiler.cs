@@ -17,7 +17,7 @@ internal sealed class WhereClauseCompiler : IClauseCompiler
         if (query.WhereEntries.Count == 0)
             return string.Empty;
 
-        return $" WHERE {string.Join(" AND ", query.WhereEntries.Select((whereClause, index) =>
+        return $"WHERE {string.Join(" AND ", query.WhereEntries.Select((whereClause, index) =>
             $"{_parameterFixer.WrapIdentifier(whereClause.Column)} {whereClause.Operator} {_parameterFixer.FormatParameter(index)}"))}";
     }
 }

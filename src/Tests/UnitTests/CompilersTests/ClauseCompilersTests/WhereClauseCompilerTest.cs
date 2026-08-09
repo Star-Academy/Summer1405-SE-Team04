@@ -41,7 +41,7 @@ public class WhereClauseCompilerTest
         var result = _sut.Compile(query);
 
         // Assert
-        result.Should().Be(" WHERE Age = 0");
+        result.Should().Be("WHERE Age = 0");
     }
 
     [Fact]
@@ -54,7 +54,7 @@ public class WhereClauseCompilerTest
         var result = _sut.Compile(query);
 
         // Assert
-        result.Should().Be(" WHERE Age = 0 AND IsMale = 1");
+        result.Should().Be("WHERE Age = 0 AND IsMale = 1");
     }
 
     [Theory]
@@ -72,7 +72,7 @@ public class WhereClauseCompilerTest
         var result = _sut.Compile(query);
 
         // Assert
-        result.Should().Be($" WHERE Age {op} 0");
+        result.Should().Be($"WHERE Age {op} 0");
     }
 
     [Fact]
@@ -99,7 +99,7 @@ public class WhereClauseCompilerTest
         var result = _sut.Compile(query);
 
         // Assert
-        result.Should().Be(" WHERE Age  0");
+        result.Should().Be("WHERE Age  0");
     }
 
     [Fact]

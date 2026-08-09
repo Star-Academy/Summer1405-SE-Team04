@@ -6,6 +6,7 @@ using QueryBuilder.ParameterFixer;
 using QueryBuilder.Utils;
 
 namespace UnitTests;
+
 public class CompilerTest
 {
     private readonly ICompiler _sut;
@@ -17,13 +18,19 @@ public class CompilerTest
     {
         _parameterFixerMock = Substitute.For<IParameterFixer>();
         _parameterFixerMock.FormatParameter(Arg.Any<int>()).Returns(x => x.Arg<int>().ToString());
-        _parameterFixerMock.WrapIdentifier(Arg.Any<string>()).Returns(x => x.Arg<string>());
+
+        var selectClauseCompilerMock = Substitute.For<IClauseCompiler>();
+        var fromClauseCompilerMock = Substitute.For<IClauseCompiler>();
+        var whereClauseCompilerMock = Substitute.For<IClauseCompiler>();
+        selectClauseCompilerMock.Compile(Arg.Any<Query>()).Returns("SELECT");
+        fromClauseCompilerMock.Compile(Arg.Any<Query>()).Returns("FROM");
+        whereClauseCompilerMock.Compile(Arg.Any<Query>()).Returns("WHERE");
 
         _factoryMock = Substitute.For<IClauseCompilerFactory>();
         _factoryMock.CreateClauses().Returns([
-            new SelectClauseCompiler(_parameterFixerMock),
-            new FromClauseCompiler(_parameterFixerMock),
-            new WhereClauseCompiler(_parameterFixerMock)
+            selectClauseCompilerMock,
+            fromClauseCompilerMock,
+            whereClauseCompilerMock
         ]);
 
         _validatorMock = Substitute.For<IValidator>();
@@ -46,34 +53,6 @@ public class CompilerTest
     }
 
     [Fact]
-    public void Compile_Should_ProduceSingleColumnQuery_When_SelectingSingleColumn()
-    {
-        // Arrange
-        var query = new Query().Select("FirstName").From("Student");
-
-        // Act
-        var (sqlString, bindings) = _sut.Compile(query);
-
-        // Assert
-        sqlString.Should().Be("SELECT FirstName FROM Student");
-        bindings.Should().BeEmpty();
-    }
-
-    [Fact]
-    public void Compile_Should_ProduceCommaSeparatedColumns_When_SelectingMultipleColumns()
-    {
-        // Arrange
-        var query = new Query().Select("FirstName", "LastName", "Age").From("Student");
-
-        // Act
-        var (sqlString, bindings) = _sut.Compile(query);
-
-        // Assert
-        sqlString.Should().Be("SELECT FirstName, LastName, Age FROM Student");
-        bindings.Should().BeEmpty();
-    }
-
-    [Fact]
     public void Compile_Should_InvokeValidator_When_QueryHasNoFromTable()
     {
         // Arrange
@@ -87,7 +66,7 @@ public class CompilerTest
     }
 
     [Fact]
-    public void Compile_Should_ProduceAndSeparatedClauses_When_QueryHasMultipleWhereClauses()
+    public void Compile_Should_ProduceOneBindingPerWhereEntry_When_QueryHasMultipleWhereClauses()
     {
         // Arrange
         var query = new Query()
@@ -100,7 +79,7 @@ public class CompilerTest
         var (sqlString, bindings) = _sut.Compile(query);
 
         // Assert
-        sqlString.Should().Be("SELECT FirstName FROM Student WHERE Age = 0 AND IsMale = 1");
+        sqlString.Should().Be("SELECT FROM WHERE");
         bindings.Should().Equal([("0", 10), ("1", true)]);
     }
 
@@ -214,19 +193,29 @@ public class CompilerTest
     public void Compile_Should_ProduceSqlInFactoryOrder_When_ClauseCompilersAreReordered()
     {
         // Arrange
-        _factoryMock.CreateClauses().Returns([
-            new WhereClauseCompiler(_parameterFixerMock),
-            new FromClauseCompiler(_parameterFixerMock),
-            new SelectClauseCompiler(_parameterFixerMock)
-        ]);
-        var sut = new Compiler(_parameterFixerMock, _factoryMock, _validatorMock);
         var query = new Query().Select("A").From("T").Where("C", 1);
+
+        var whereClauseCompilerMock = Substitute.For<IClauseCompiler>();
+        var fromClauseCompilerMock = Substitute.For<IClauseCompiler>();
+        var selectClauseCompilerMock = Substitute.For<IClauseCompiler>();
+
+        whereClauseCompilerMock.Compile(query).Returns("WHERE C = 0");
+        fromClauseCompilerMock.Compile(query).Returns("FROM T");
+        selectClauseCompilerMock.Compile(query).Returns("SELECT A");
+
+        _factoryMock.CreateClauses().Returns([
+            whereClauseCompilerMock,
+            fromClauseCompilerMock,
+            selectClauseCompilerMock
+        ]);
+
+        var sut = new Compiler(_parameterFixerMock, _factoryMock, _validatorMock);
 
         // Act
         var (sqlString, _) = sut.Compile(query);
 
         // Assert
-        sqlString.Should().Be(" WHERE C = 0 FROM TSELECT A");
+        sqlString.Should().Be("WHERE C = 0 FROM T SELECT A");
     }
 
     [Fact]

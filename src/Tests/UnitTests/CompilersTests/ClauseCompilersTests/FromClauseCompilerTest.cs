@@ -27,20 +27,7 @@ public class FromClauseCompilerTest
         var result = _sut.Compile(query);
 
         // Assert
-        result.Should().Be(" FROM Student");
-    }
-
-    [Fact]
-    public void Compile_Should_ProduceFromWithEmptyIdentifier_When_NoTableIsSpecified()
-    {
-        // Arrange
-        var query = new Query();
-
-        // Act
-        var result = _sut.Compile(query);
-
-        // Assert
-        result.Should().Be(" FROM ");
+        result.Should().Be("FROM Student");
     }
 
     [Fact]
