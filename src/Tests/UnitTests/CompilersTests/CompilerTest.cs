@@ -11,7 +11,7 @@ public class CompilerTest
 {
     private readonly IClauseCompilerFactory _factory;
     private readonly IParameterFixer _parameterFixer;
-    private readonly ICompiler _sut;
+    private readonly Compiler _sut;
     private readonly IValidator _validator;
 
     public CompilerTest()
