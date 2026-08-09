@@ -104,13 +104,13 @@ public class SqlValidatorTest
     }
 
     [Fact]
-    public void ValidateStringsNotEmpty_ShouldThrowNullReferenceException_WhenArrayIsNull()
+    public void ValidateStringsNotEmpty_ShouldThrowArgumentNullException_WhenArrayIsNull()
     {
         // Act
         var act = () => _sut.ValidateStringsNotEmpty(null!);
 
         // Assert
-        act.Should().Throw<NullReferenceException>();
+        act.Should().Throw<ArgumentNullException>().WithParameterName("parameters");
     }
 
     [Fact]
@@ -166,12 +166,12 @@ public class SqlValidatorTest
     }
 
     [Fact]
-    public void ValidateQuery_ShouldThrowNullReferenceException_WhenQueryIsNull()
+    public void ValidateQuery_ShouldThrowArgumentNullException_WhenQueryIsNull()
     {
         // Act
         var act = () => _sut.ValidateQuery(null!);
 
         // Assert
-        act.Should().Throw<NullReferenceException>();
+        act.Should().Throw<ArgumentNullException>().WithParameterName("query");
     }
 }

@@ -239,13 +239,13 @@ public class CompilerTest
     }
 
     [Fact]
-    public void Compile_ShouldThrowNullReferenceException_WhenQueryIsNull()
+    public void Compile_ShouldThrowArgumentNullException_WhenQueryIsNull()
     {
         // Act
         var act = () => _sut.Compile(null!);
 
         // Assert
-        act.Should().Throw<NullReferenceException>();
+        act.Should().Throw<ArgumentNullException>().WithParameterName("query");
     }
 
     [Fact]
