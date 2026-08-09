@@ -14,11 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="Xunit" />
-    <Using Include="AwesomeAssertions" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AwesomeAssertions" Version="9.5.0" />
     <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.9.0" />
     <PackageReference Include="NSubstitute" Version="6.0.0" />

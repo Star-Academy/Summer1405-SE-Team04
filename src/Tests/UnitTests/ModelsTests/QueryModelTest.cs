@@ -1,6 +1,5 @@
 using QueryBuilder.Models;
 using QueryBuilder.Utils;
-using NSubstitute;
 
 namespace UnitTests;
 
@@ -16,13 +15,10 @@ public class QueryModelTest
         var query = new Query();
 
         // Act
-        var exception = Assert.Throws<ArgumentException>(() =>
-        {
-            query.Select(inputs);
-        });
+        var act = () => query.Select(inputs);
 
         // Assert
-        Assert.Equal(expectedMessage, exception.Message);
+        act.Should().Throw<ArgumentException>().WithMessage(expectedMessage);
     }
 
     [Fact]
@@ -32,7 +28,7 @@ public class QueryModelTest
         var query = new Query().Select("FirstName", "LastName", "Age").Select("Grade");
 
         // Assert
-        Assert.Equal(["Grade"], query.SelectColumns);
+        query.SelectColumns.Should().Equal("Grade");
     }
 
     [Theory]
@@ -44,13 +40,10 @@ public class QueryModelTest
         var query = new Query();
 
         // Act
-        var exception = Assert.Throws<ArgumentException>(() =>
-        {
-            query.From(input);
-        });
+        var act = () => query.From(input);
 
         // Assert
-        exception.Message.Should().Be(expectedMessage);
+        act.Should().Throw<ArgumentException>().WithMessage(expectedMessage);
     }
 
     [Theory]
@@ -62,13 +55,10 @@ public class QueryModelTest
         var query = new Query();
 
         // Act
-        var exception = Assert.Throws<ArgumentException>(() =>
-        {
-            query.Where(input, "harchi");
-        });
+        var act = () => query.Where(input, "harchi");
 
         // Assert
-        Assert.Equal("ColumnName must be valid name.", exception.Message);
+        act.Should().Throw<ArgumentException>().WithMessage("ColumnName must be valid name.");
     }
 
     [Fact]
@@ -87,7 +77,7 @@ public class QueryModelTest
                 new WhereClause("c2", "=", true),
                 new WhereClause("c3", "=", "Ali")
            };
-        Assert.Equal(expectedClauses, query.WhereEntries);
+        query.WhereEntries.Should().Equal(expectedClauses);
     }
 
     [Fact]
@@ -97,7 +87,7 @@ public class QueryModelTest
         var query = new Query().From("FirstName").From("LastName");
 
         // Assert
-        Assert.Equal("LastName", query.FromTable);
+        query.FromTable.Should().Be("LastName");
     }
 
     [Fact]
@@ -161,15 +151,42 @@ public class QueryModelTest
     }
 
     [Fact]
-    public void Query_Should_ReturnSameInstance_When_FluentMethodsAreCalled()
+    public void Select_Should_ReturnSameInstance_When_Called()
     {
         // Arrange
         var query = new Query();
 
-        // Act & Assert
-        query.Select("A").Should().BeSameAs(query);
-        query.From("T").Should().BeSameAs(query);
-        query.Where("A", 1).Should().BeSameAs(query);
+        // Act
+        var result = query.Select("A");
+
+        // Assert
+        result.Should().BeSameAs(query);
+    }
+
+    [Fact]
+    public void From_Should_ReturnSameInstance_When_Called()
+    {
+        // Arrange
+        var query = new Query();
+
+        // Act
+        var result = query.From("T");
+
+        // Assert
+        result.Should().BeSameAs(query);
+    }
+
+    [Fact]
+    public void Where_Should_ReturnSameInstance_When_Called()
+    {
+        // Arrange
+        var query = new Query();
+
+        // Act
+        var result = query.Where("A", 1);
+
+        // Assert
+        result.Should().BeSameAs(query);
     }
 
     [Fact]
@@ -199,7 +216,7 @@ public class QueryModelTest
         query.Select("A", "B");
 
         // Assert
-        validatorMock.Received(1).ValidateStringsNotEmpty(Arg.Any<string[]>());
+        validatorMock.Received(1).ValidateStringsNotEmpty("A", "B");
     }
 
     [Fact]

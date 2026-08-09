@@ -4,7 +4,6 @@ using QueryBuilder.Compilers.ClauseCompilers;
 using QueryBuilder.Factory;
 using QueryBuilder.ParameterFixer;
 using QueryBuilder.Utils;
-using NSubstitute;
 
 namespace UnitTests;
 public class CompilerTest
@@ -56,8 +55,8 @@ public class CompilerTest
         var (sqlString, bindings) = _sut.Compile(query);
 
         // Assert
-        Assert.Equal("SELECT FirstName FROM Student", sqlString);
-        Assert.Empty(bindings);
+        sqlString.Should().Be("SELECT FirstName FROM Student");
+        bindings.Should().BeEmpty();
     }
 
     [Fact]
@@ -70,8 +69,8 @@ public class CompilerTest
         var (sqlString, bindings) = _sut.Compile(query);
 
         // Assert
-        Assert.Equal("SELECT FirstName, LastName, Age FROM Student", sqlString);
-        Assert.Empty(bindings);
+        sqlString.Should().Be("SELECT FirstName, LastName, Age FROM Student");
+        bindings.Should().BeEmpty();
     }
 
     [Fact]
@@ -101,8 +100,8 @@ public class CompilerTest
         var (sqlString, bindings) = _sut.Compile(query);
 
         // Assert
-        Assert.Equal("SELECT FirstName FROM Student WHERE Age = 0 AND IsMale = 1", sqlString);
-        Assert.Equal([("0",10), ("1",true)], bindings);
+        sqlString.Should().Be("SELECT FirstName FROM Student WHERE Age = 0 AND IsMale = 1");
+        bindings.Should().Equal([("0", 10), ("1", true)]);
     }
 
     [Fact]
