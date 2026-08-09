@@ -34,7 +34,7 @@ public class CompilerTest
     }
 
     [Fact]
-    public void Should_InvokeValidator_When_QueryHasNoSelectColumns()
+    public void Compile_Should_InvokeValidator_When_QueryHasNoSelectColumns()
     {
         // Arrange
         var query = new Query().From("Student");
@@ -47,7 +47,7 @@ public class CompilerTest
     }
 
     [Fact]
-    public void Should_ProduceSingleColumnQuery_When_SelectingSingleColumn()
+    public void Compile_Should_ProduceSingleColumnQuery_When_SelectingSingleColumn()
     {
         // Arrange
         var query = new Query().Select("FirstName").From("Student");
@@ -61,7 +61,7 @@ public class CompilerTest
     }
 
     [Fact]
-    public void Should_ProduceCommaSeparatedColumns_When_SelectingMultipleColumns()
+    public void Compile_Should_ProduceCommaSeparatedColumns_When_SelectingMultipleColumns()
     {
         // Arrange
         var query = new Query().Select("FirstName", "LastName", "Age").From("Student");
@@ -75,7 +75,7 @@ public class CompilerTest
     }
 
     [Fact]
-    public void Should_InvokeValidator_When_QueryHasNoFromTable()
+    public void Compile_Should_InvokeValidator_When_QueryHasNoFromTable()
     {
         // Arrange
         var query = new Query().Select("FirstName");
@@ -88,7 +88,7 @@ public class CompilerTest
     }
 
     [Fact]
-    public void Should_ProduceAndSeparatedClauses_When_QueryHasMultipleWhereClauses()
+    public void Compile_Should_ProduceAndSeparatedClauses_When_QueryHasMultipleWhereClauses()
     {
         // Arrange
         var query = new Query()
@@ -106,7 +106,7 @@ public class CompilerTest
     }
 
     [Fact]
-    public void Should_ThrowInvalidOperationException_When_QueryIsInvalid()
+    public void Compile_Should_ThrowInvalidOperationException_When_QueryIsInvalid()
     {
         // Arrange
         _validatorMock.ValidateQuery(Arg.Any<Query>()).Returns(false);
@@ -120,7 +120,7 @@ public class CompilerTest
     }
 
     [Fact]
-    public void Should_NotInvokeClauseCompilers_When_QueryIsInvalid()
+    public void Compile_Should_NotInvokeClauseCompilers_When_QueryIsInvalid()
     {
         // Arrange
         _validatorMock.ValidateQuery(Arg.Any<Query>()).Returns(false);
@@ -138,7 +138,7 @@ public class CompilerTest
     }
 
     [Fact]
-    public void Should_ThrowArgumentNullException_When_ParameterFixerIsNull()
+    public void Compile_Should_ThrowArgumentNullException_When_ParameterFixerIsNull()
     {
         // Act
         var act = () => new Compiler(null!, _factoryMock, _validatorMock);
@@ -148,7 +148,7 @@ public class CompilerTest
     }
 
     [Fact]
-    public void Should_ThrowArgumentNullException_When_ValidatorIsNull()
+    public void Compile_Should_ThrowArgumentNullException_When_ValidatorIsNull()
     {
         // Act
         var act = () => new Compiler(_parameterFixerMock, _factoryMock, null!);
@@ -158,7 +158,7 @@ public class CompilerTest
     }
 
     [Fact]
-    public void Should_ThrowArgumentNullException_When_FactoryReturnsNullClauses()
+    public void Compile_Should_ThrowArgumentNullException_When_FactoryReturnsNullClauses()
     {
         // Arrange
         _factoryMock.CreateClauses().Returns((IEnumerable<IClauseCompiler>)null!);
@@ -171,7 +171,7 @@ public class CompilerTest
     }
 
     [Fact]
-    public void Should_ThrowNullReferenceException_When_FactoryIsNull()
+    public void Compile_Should_ThrowNullReferenceException_When_FactoryIsNull()
     {
         // Act
         var act = () => new Compiler(_parameterFixerMock, null!, _validatorMock);
@@ -181,7 +181,7 @@ public class CompilerTest
     }
 
     [Fact]
-    public void Should_StillFormatParameters_When_QueryIsInvalid()
+    public void Compile_Should_StillFormatParameters_When_QueryIsInvalid()
     {
         // Arrange
         _validatorMock.ValidateQuery(Arg.Any<Query>()).Returns(false);
@@ -196,7 +196,7 @@ public class CompilerTest
     }
 
     [Fact]
-    public void Should_ProduceEmptySqlWithBindings_When_ClauseCompilerListIsEmpty()
+    public void Compile_Should_ProduceEmptySqlWithBindings_When_ClauseCompilerListIsEmpty()
     {
         // Arrange
         _factoryMock.CreateClauses().Returns([]);
@@ -212,7 +212,7 @@ public class CompilerTest
     }
 
     [Fact]
-    public void Should_ProduceSqlInFactoryOrder_When_ClauseCompilersAreReordered()
+    public void Compile_Should_ProduceSqlInFactoryOrder_When_ClauseCompilersAreReordered()
     {
         // Arrange
         _factoryMock.CreateClauses().Returns([
@@ -231,7 +231,7 @@ public class CompilerTest
     }
 
     [Fact]
-    public void Should_InvokeEachClauseCompilerExactlyOnce_When_CompilingAQuery()
+    public void Compile_Should_InvokeEachClauseCompilerExactlyOnce_When_CompilingAQuery()
     {
         // Arrange
         var firstClauseMock = Substitute.For<IClauseCompiler>();
@@ -251,7 +251,7 @@ public class CompilerTest
     }
 
     [Fact]
-    public void Should_ThrowNullReferenceException_When_QueryIsNull()
+    public void Compile_Should_ThrowNullReferenceException_When_QueryIsNull()
     {
         // Act
         var act = () => _sut.Compile(null!);
@@ -261,7 +261,7 @@ public class CompilerTest
     }
 
     [Fact]
-    public void Should_NotFormatParameters_When_QueryHasNoWhereClause()
+    public void Compile_Should_NotFormatParameters_When_QueryHasNoWhereClause()
     {
         // Arrange
         var query = new Query().Select("A").From("T");
@@ -274,7 +274,7 @@ public class CompilerTest
     }
 
     [Fact]
-    public void Should_NotBeEqual_When_TwoResultsHaveIdenticalContent()
+    public void Compile_Should_NotBeEqual_When_TwoResultsHaveIdenticalContent()
     {
         // Arrange
         var query = new Query().Select("A").From("T");
