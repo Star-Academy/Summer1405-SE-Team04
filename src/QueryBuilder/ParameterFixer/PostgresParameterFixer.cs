@@ -10,6 +10,7 @@ internal sealed class PostgresParameterFixer : IParameterFixer
 
     public string WrapIdentifier(string identifier)
     {
+        ArgumentNullException.ThrowIfNull(identifier);
         return $"\"{identifier}\"";
     }
 

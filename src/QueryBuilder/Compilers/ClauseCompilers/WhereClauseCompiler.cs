@@ -9,11 +9,13 @@ internal sealed class WhereClauseCompiler : IClauseCompiler
 
     public WhereClauseCompiler(IParameterFixer parameterFixer)
     {
-        _parameterFixer = parameterFixer;
+        _parameterFixer = parameterFixer ?? throw new ArgumentNullException(nameof(parameterFixer));
     }
 
     public string Compile(Query query)
     {
+        if (query == null)
+            throw new ArgumentNullException(nameof(query));
         if (query.WhereEntries.Count == 0)
             return string.Empty;
 

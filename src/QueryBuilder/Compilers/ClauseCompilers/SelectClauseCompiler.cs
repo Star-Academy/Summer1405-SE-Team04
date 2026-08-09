@@ -9,7 +9,7 @@ internal sealed class SelectClauseCompiler : IClauseCompiler
 
     public SelectClauseCompiler(IParameterFixer parameterFixer)
     {
-        _parameterFixer = parameterFixer;
+        _parameterFixer = parameterFixer ?? throw new ArgumentNullException(nameof(parameterFixer));
     }
 
     public string Compile(Query query)
