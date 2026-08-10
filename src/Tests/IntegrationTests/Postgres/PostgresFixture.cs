@@ -9,10 +9,7 @@ public class PostgresFixture : IAsyncLifetime
 
     public PostgresFixture()
     {
-        PostgresContainer = new PostgreSqlBuilder()
-        .WithImage("hub.hamdocker.ir/library/postgres:16")
-        .WithUsername("postgres")
-        .WithPassword("postgres")
+        PostgresContainer = new PostgreSqlBuilder("hub.hamdocker.ir/library/postgres:16")
         .Build();
     }
     public async ValueTask InitializeAsync()

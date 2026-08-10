@@ -9,8 +9,7 @@ public class SqlServerFixture : IAsyncLifetime
 
     public SqlServerFixture()
     {
-        MsContainer = new MsSqlBuilder()
-        .WithImage("mcr.hamdocker.ir/mssql/server:2022-latest")
+        MsContainer = new MsSqlBuilder("mcr.hamdocker.ir/mssql/server:2022-latest")
         .Build();
     }
     public async ValueTask InitializeAsync()
@@ -32,7 +31,7 @@ public class SqlServerFixture : IAsyncLifetime
         var queryString = """
         CREATE TABLE [Student](
             [ID]            int PRIMARY KEY,
-            [FirstName]     varchar(20),
+            [FirstName]     nvarchar(20),
             [IsMale]        bit,
             [Age]           int
         );
