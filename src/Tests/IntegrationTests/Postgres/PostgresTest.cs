@@ -12,9 +12,18 @@ namespace IntegrationTests.Postgres;
 public class PostgresIntegrationTest : IClassFixture<PostgresFixture>
 {
     private readonly PostgresFixture _postgresFixture;
+
+    private readonly QueryExecutor _sut;
     public PostgresIntegrationTest(PostgresFixture postgresFixture)
     {
         _postgresFixture = postgresFixture;
+
+        var compiler = new Compiler(PostgresParameterFixer.Instance,
+        new PostgresClauseCompilerFactory(),
+        new SqlValidator());
+        _sut = new QueryExecutor(NpgsqlFactory.Instance,
+        compiler,
+        _postgresFixture.PostgresContainer.GetConnectionString());
     }
 
 
@@ -23,15 +32,10 @@ public class PostgresIntegrationTest : IClassFixture<PostgresFixture>
     {
         //Arrange
         var query = new Query().Select("ID", "FirstName", "IsMale", "Age").From("Student");
-        var compiler = new Compiler(PostgresParameterFixer.Instance,
-        new PostgresClauseCompilerFactory(),
-        new SqlValidator());
-        var executator = new QueryExecutor(NpgsqlFactory.Instance,
-        compiler,
-        _postgresFixture.PostgresContainer.GetConnectionString());
+
 
         //Act
-        await using var reader = await executator.ExecuteQuery(query);
+        await using var reader = await _sut.ExecuteQuery(query);
 
         //Assert
 
@@ -56,15 +60,9 @@ public class PostgresIntegrationTest : IClassFixture<PostgresFixture>
     {
         //Arrange
         var query = new Query().Select("ID", "FirstName", "IsMale", "Age").From("Student").Where("FirstName", "Ali");
-        var compiler = new Compiler(PostgresParameterFixer.Instance,
-        new PostgresClauseCompilerFactory(),
-        new SqlValidator());
-        var executator = new QueryExecutor(NpgsqlFactory.Instance,
-        compiler,
-        _postgresFixture.PostgresContainer.GetConnectionString());
 
         //Act
-        await using var reader = await executator.ExecuteQuery(query);
+        await using var reader = await _sut.ExecuteQuery(query);
 
         //Assert
         (await reader.ReadAsync()).Should().BeTrue();
@@ -81,15 +79,9 @@ public class PostgresIntegrationTest : IClassFixture<PostgresFixture>
     {
         //Arrange
         var query = new Query().Select("ID", "FirstName").From("Student").Where("Age", ">", 30);
-        var compiler = new Compiler(PostgresParameterFixer.Instance,
-        new PostgresClauseCompilerFactory(),
-        new SqlValidator());
-        var executator = new QueryExecutor(NpgsqlFactory.Instance,
-        compiler,
-        _postgresFixture.PostgresContainer.GetConnectionString());
 
         //Act
-        await using var reader = await executator.ExecuteQuery(query);
+        await using var reader = await _sut.ExecuteQuery(query);
 
         //Assert
         (await reader.ReadAsync()).Should().BeTrue();
@@ -104,15 +96,9 @@ public class PostgresIntegrationTest : IClassFixture<PostgresFixture>
     {
         //Arrage
         var query = new Query().Select("ID", "FirstName").From("Student").Where("Age", ">", 100);
-        var compiler = new Compiler(PostgresParameterFixer.Instance,
-            new PostgresClauseCompilerFactory(),
-            new SqlValidator());
-        var executator = new QueryExecutor(NpgsqlFactory.Instance,
-        compiler,
-        _postgresFixture.PostgresContainer.GetConnectionString());
 
         //Act
-        await using var reader = await executator.ExecuteQuery(query);
+        await using var reader = await _sut.ExecuteQuery(query);
 
         //Assert
         (await reader.ReadAsync()).Should().BeFalse();

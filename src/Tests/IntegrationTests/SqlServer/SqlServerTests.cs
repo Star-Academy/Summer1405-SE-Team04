@@ -12,10 +12,19 @@ namespace IntegrationTests.SqlServer;
 public class SqlServerTest : IClassFixture<SqlServerFixture>
 {
     private readonly SqlServerFixture _sqlServerFixture;
+    private readonly QueryExecutor _sut;
 
     public SqlServerTest(SqlServerFixture sqlServerFixture)
     {
         _sqlServerFixture = sqlServerFixture;
+
+        var compiler = new Compiler(SqlServerParameterFixer.Instance,
+        new SqlServerClauseCompilerFactory(),
+        new SqlValidator());
+
+        _sut = new QueryExecutor(SqlClientFactory.Instance,
+        compiler,
+        _sqlServerFixture.MsContainer.GetConnectionString());
     }
 
     [Fact]
@@ -23,15 +32,10 @@ public class SqlServerTest : IClassFixture<SqlServerFixture>
     {
         //Arrange
         var query = new Query().Select("ID", "FirstName", "IsMale", "Age").From("Student");
-        var compiler = new Compiler(PostgresParameterFixer.Instance,
-        new PostgresClauseCompilerFactory(),
-        new SqlValidator());
-        var executator = new QueryExecutor(SqlClientFactory.Instance,
-        compiler,
-        _sqlServerFixture.MsContainer.GetConnectionString());
+
 
         //Act
-        await using var reader = await executator.ExecuteQuery(query);
+        await using var reader = await _sut.ExecuteQuery(query);
 
         //Assert
         for (int i = 0; i < TestData.Students.Count; i++)
@@ -54,15 +58,9 @@ public class SqlServerTest : IClassFixture<SqlServerFixture>
     {
         //Arrange
         var query = new Query().Select("ID", "FirstName", "IsMale", "Age").From("Student").Where("FirstName", "Ali");
-        var compiler = new Compiler(PostgresParameterFixer.Instance,
-        new PostgresClauseCompilerFactory(),
-        new SqlValidator());
-        var executator = new QueryExecutor(SqlClientFactory.Instance,
-        compiler,
-        _sqlServerFixture.MsContainer.GetConnectionString());
 
         //Act
-        await using var reader = await executator.ExecuteQuery(query);
+        await using var reader = await _sut.ExecuteQuery(query);
 
         //Assert
         (await reader.ReadAsync()).Should().BeTrue();
@@ -79,15 +77,9 @@ public class SqlServerTest : IClassFixture<SqlServerFixture>
     {
         //Arrange
         var query = new Query().Select("ID", "FirstName").From("Student").Where("Age", ">", 30);
-        var compiler = new Compiler(PostgresParameterFixer.Instance,
-        new PostgresClauseCompilerFactory(),
-        new SqlValidator());
-        var executator = new QueryExecutor(SqlClientFactory.Instance,
-        compiler,
-        _sqlServerFixture.MsContainer.GetConnectionString());
 
         //Act
-        await using var reader = await executator.ExecuteQuery(query);
+        await using var reader = await _sut.ExecuteQuery(query);
 
         //Assert
         (await reader.ReadAsync()).Should().BeTrue();
@@ -102,15 +94,9 @@ public class SqlServerTest : IClassFixture<SqlServerFixture>
     {
         //Arrage
         var query = new Query().Select("ID", "FirstName").From("Student").Where("Age", ">", 100);
-        var compiler = new Compiler(PostgresParameterFixer.Instance,
-            new PostgresClauseCompilerFactory(),
-            new SqlValidator());
-        var executator = new QueryExecutor(SqlClientFactory.Instance,
-        compiler,
-        _sqlServerFixture.MsContainer.GetConnectionString());
 
         //Act
-        await using var reader = await executator.ExecuteQuery(query);
+        await using var reader = await _sut.ExecuteQuery(query);
 
         //Assert
         (await reader.ReadAsync()).Should().BeFalse();
