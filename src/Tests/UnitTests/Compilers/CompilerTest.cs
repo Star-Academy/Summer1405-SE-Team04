@@ -9,7 +9,7 @@ namespace UnitTests.Compilers;
 
 public class CompilerTest
 {
-    private readonly IClauseCompilerFactory _factory;
+    private readonly IClauseCompilerFactory _clauseCompilerFactory;
     private readonly IParameterFixer _parameterFixer;
     private readonly Compiler _sut;
     private readonly IValidator _validator;
@@ -26,8 +26,8 @@ public class CompilerTest
         fromClauseCompiler.Compile(Arg.Any<Query>()).Returns("FROM");
         whereClauseCompiler.Compile(Arg.Any<Query>()).Returns("WHERE");
 
-        _factory = Substitute.For<IClauseCompilerFactory>();
-        _factory.CreateClauses().Returns([
+        _clauseCompilerFactory = Substitute.For<IClauseCompilerFactory>();
+        _clauseCompilerFactory.CreateClauses().Returns([
             selectClauseCompiler,
             fromClauseCompiler,
             whereClauseCompiler
@@ -36,7 +36,7 @@ public class CompilerTest
         _validator = Substitute.For<IValidator>();
         _validator.ValidateQuery(Arg.Any<Query>()).Returns(true);
 
-        _sut = new Compiler(_parameterFixer, _factory, _validator);
+        _sut = new Compiler(_parameterFixer, _clauseCompilerFactory, _validator);
     }
 
     [Fact]
@@ -103,8 +103,8 @@ public class CompilerTest
         // Arrange
         _validator.ValidateQuery(Arg.Any<Query>()).Returns(false);
         var clauseCompiler = Substitute.For<IClauseCompiler>();
-        _factory.CreateClauses().Returns([clauseCompiler]);
-        var sut = new Compiler(_parameterFixer, _factory, _validator);
+        _clauseCompilerFactory.CreateClauses().Returns([clauseCompiler]);
+        var sut = new Compiler(_parameterFixer, _clauseCompilerFactory, _validator);
         var query = new Query();
 
         // Act
@@ -121,7 +121,7 @@ public class CompilerTest
         // Arrange
 
         // Act
-        var act = () => new Compiler(null!, _factory, _validator);
+        var act = () => new Compiler(null!, _clauseCompilerFactory, _validator);
 
         // Assert
         act.Should().Throw<ArgumentNullException>().WithParameterName("parameterFixer");
@@ -133,7 +133,7 @@ public class CompilerTest
         // Arrange
 
         // Act
-        var act = () => new Compiler(_parameterFixer, _factory, null!);
+        var act = () => new Compiler(_parameterFixer, _clauseCompilerFactory, null!);
 
         // Assert
         act.Should().Throw<ArgumentNullException>().WithParameterName("validator");
@@ -143,10 +143,10 @@ public class CompilerTest
     public void Compile_ShouldThrowArgumentNullException_WhenFactoryReturnsNullClauses()
     {
         // Arrange
-        _factory.CreateClauses().Returns((IEnumerable<IClauseCompiler>)null!);
+        _clauseCompilerFactory.CreateClauses().Returns((IEnumerable<IClauseCompiler>)null!);
 
         // Act
-        var act = () => new Compiler(_parameterFixer, _factory, _validator);
+        var act = () => new Compiler(_parameterFixer, _clauseCompilerFactory, _validator);
 
         // Assert
         act.Should().Throw<ArgumentNullException>().WithParameterName("clauseCompilers");
@@ -183,8 +183,8 @@ public class CompilerTest
     public void Compile_ShouldProduceEmptySqlWithBindings_WhenClauseCompilerListIsEmpty()
     {
         // Arrange
-        _factory.CreateClauses().Returns([]);
-        var sut = new Compiler(_parameterFixer, _factory, _validator);
+        _clauseCompilerFactory.CreateClauses().Returns([]);
+        var sut = new Compiler(_parameterFixer, _clauseCompilerFactory, _validator);
         var query = new Query().Where("Age", 10);
 
         // Act
@@ -209,13 +209,13 @@ public class CompilerTest
         fromClauseCompiler.Compile(query).Returns("FROM T");
         selectClauseCompiler.Compile(query).Returns("SELECT A");
 
-        _factory.CreateClauses().Returns([
+        _clauseCompilerFactory.CreateClauses().Returns([
             whereClauseCompiler,
             fromClauseCompiler,
             selectClauseCompiler
         ]);
 
-        var sut = new Compiler(_parameterFixer, _factory, _validator);
+        var sut = new Compiler(_parameterFixer, _clauseCompilerFactory, _validator);
 
         // Act
         var (sqlString, _) = sut.Compile(query);
@@ -231,8 +231,8 @@ public class CompilerTest
         var firstClause = Substitute.For<IClauseCompiler>();
         var secondClause = Substitute.For<IClauseCompiler>();
         var thirdClause = Substitute.For<IClauseCompiler>();
-        _factory.CreateClauses().Returns([firstClause, secondClause, thirdClause]);
-        var sut = new Compiler(_parameterFixer, _factory, _validator);
+        _clauseCompilerFactory.CreateClauses().Returns([firstClause, secondClause, thirdClause]);
+        var sut = new Compiler(_parameterFixer, _clauseCompilerFactory, _validator);
         var query = new Query();
 
         // Act
