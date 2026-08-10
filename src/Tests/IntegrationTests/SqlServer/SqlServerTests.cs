@@ -1,3 +1,4 @@
+using System.Data.Common;
 using AwesomeAssertions;
 using Microsoft.Data.SqlClient;
 using QueryBuilder.Compilers;
@@ -102,4 +103,16 @@ public class SqlServerTest : IClassFixture<SqlServerFixture>
         (await reader.ReadAsync()).Should().BeFalse();
     }
 
+    [Fact]
+    public async Task Execute_ShouldPropagateException_WhenTableIsNotExist()
+    {
+        // Arrange
+        var query = new Query().Select("FirstName").From("NoTable");
+
+        // Act
+        Func<Task> act = () => _sut.ExecuteQuery(query);
+
+        // Assert
+        await act.Should().ThrowAsync<DbException>();
+    }
 }

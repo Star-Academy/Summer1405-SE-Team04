@@ -1,3 +1,4 @@
+using System.Data.Common;
 using AwesomeAssertions;
 using Npgsql;
 using QueryBuilder.Compilers;
@@ -94,7 +95,7 @@ public class PostgresIntegrationTest : IClassFixture<PostgresFixture>
     [Fact]
     public async Task Execute_ShouldReturnNoRows_WhenNoStudentMatches()
     {
-        //Arrage
+        //Arrange
         var query = new Query().Select("ID", "FirstName").From("Student").Where("Age", ">", 100);
 
         //Act
@@ -102,5 +103,17 @@ public class PostgresIntegrationTest : IClassFixture<PostgresFixture>
 
         //Assert
         (await reader.ReadAsync()).Should().BeFalse();
+    }
+    [Fact]
+    public async Task Execute_ShouldPropagateException_WhenTableIsNotExist()
+    {
+        // Arrange
+        var query = new Query().Select("FirstName").From("NoTable");
+
+        // Act
+        Func<Task> act = () => _sut.ExecuteQuery(query);
+
+        // Assert
+        await act.Should().ThrowAsync<DbException>();
     }
 }
