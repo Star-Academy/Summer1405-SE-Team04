@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/ASP/ASP.csproj" />
     <Project Path="src/MainApp/MainApp.csproj" />
     <Project Path="src/QueryBuilder/QueryBuilder.csproj" />
     <Project Path="src/SqlApp/SqlApp.csproj" />

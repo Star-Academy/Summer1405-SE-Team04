@@ -1,6 +1,7 @@
 @ASP_HostAddress = http://localhost:5081
 
-GET {{ASP_HostAddress}}/weatherforecast/
+GET {{ASP_HostAddress}}/Simple/GetSimple
 Accept: application/json
+
 
 ###
