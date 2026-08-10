@@ -1,8 +1,10 @@
 <Solution>
-    <Folder Name="/src/">
-        <Project Path="src/MainApp/MainApp.csproj"/>
-        <Project Path="src/QueryBuilder/QueryBuilder.csproj"/>
-        <Project Path="src/SqlApp/SqlApp.csproj"/>
-    </Folder>
-    <Folder Name="/src/Tests/"/>
+  <Folder Name="/src/">
+    <Project Path="src/MainApp/MainApp.csproj" />
+    <Project Path="src/QueryBuilder/QueryBuilder.csproj" />
+    <Project Path="src/SqlApp/SqlApp.csproj" />
+  </Folder>
+  <Folder Name="/src/Tests/">
+    <Project Path="src/Tests/UnitTests/UnitTests.csproj" />
+  </Folder>
 </Solution>

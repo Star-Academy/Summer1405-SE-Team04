@@ -15,6 +15,6 @@ internal sealed class FromClauseCompiler : IClauseCompiler
 
     public string Compile(Query query)
     {
-        return $" FROM {_parameterFixer.WrapIdentifier(query.FromTable)}";
+        return $"FROM {_parameterFixer.WrapIdentifier(query.FromTable)}";
     }
 }

@@ -34,15 +34,15 @@ internal class Compiler : ICompiler
     public SqlResult Compile(Query query)
     {
         ArgumentNullException.ThrowIfNull(query);
-        var sqlBuilder = new StringBuilder();
         var bindings = query.WhereEntries.Select((clause, index) =>
                 (_parameterFixer.FormatParameter(index), clause.Value))
             .ToList();
 
         if (!_validator.ValidateQuery(query))
             throw new InvalidOperationException("Query is not valid.");
-        foreach (var clauseCompiler in _clauseCompilers)
-            sqlBuilder.Append(clauseCompiler.Compile(query));
-        return new SqlResult(sqlBuilder.ToString(), bindings);
+        
+        var sqlQueryString = string.Join(" ", _clauseCompilers.Select(x => x.Compile(query)));
+
+        return new SqlResult(sqlQueryString, bindings);
     }
 }

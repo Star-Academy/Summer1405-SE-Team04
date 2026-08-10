@@ -1,0 +1,117 @@
+using QueryBuilder.Compilers.ClauseCompilers;
+using QueryBuilder.Models;
+using QueryBuilder.ParameterFixer;
+
+namespace UnitTests.Compilers.ClauseCompilers;
+
+public class WhereClauseCompilerTest
+{
+    private readonly IParameterFixer _parameterFixer;
+    private readonly WhereClauseCompiler _sut;
+
+    public WhereClauseCompilerTest()
+    {
+        _parameterFixer = Substitute.For<IParameterFixer>();
+        _parameterFixer.WrapIdentifier(Arg.Any<string>()).Returns(x => x.Arg<string>());
+        _parameterFixer.FormatParameter(Arg.Any<int>()).Returns(x => x.Arg<int>().ToString());
+
+        _sut = new WhereClauseCompiler(_parameterFixer);
+    }
+
+    [Fact]
+    public void Compile_ShouldProduceEmptyString_WhenNoWhereEntriesExist()
+    {
+        // Arrange
+        var query = new Query();
+
+        // Act
+        var result = _sut.Compile(query);
+
+        // Assert
+        result.Should().Be(string.Empty);
+    }
+
+    [Fact]
+    public void Compile_ShouldProduceWhereWithLeadingSpace_WhenSingleEntryExists()
+    {
+        // Arrange
+        var query = new Query().Where("Age", 10);
+
+        // Act
+        var result = _sut.Compile(query);
+
+        // Assert
+        result.Should().Be("WHERE Age = 0");
+    }
+
+    [Fact]
+    public void Compile_ShouldJoinEntriesWithAnd_WhenMultipleEntriesExist()
+    {
+        // Arrange
+        var query = new Query().Where("Age", 10).Where("IsMale", true);
+
+        // Act
+        var result = _sut.Compile(query);
+
+        // Assert
+        result.Should().Be("WHERE Age = 0 AND IsMale = 1");
+    }
+
+    [Theory]
+    [InlineData(">")]
+    [InlineData("<=")]
+    [InlineData("LIKE")]
+    [InlineData("!=")]
+    [InlineData("IS NOT")]
+    public void Compile_ShouldEmitOperatorVerbatim_WhenCustomOperatorIsUsed(string op)
+    {
+        // Arrange
+        var query = new Query().Where("Age", op, 10);
+
+        // Act
+        var result = _sut.Compile(query);
+
+        // Assert
+        result.Should().Be($"WHERE Age {op} 0");
+    }
+
+    [Fact]
+    public void Compile_ShouldFormatParameterPerEntryIndex_WhenCompiling()
+    {
+        // Arrange
+        var query = new Query().Where("Age", 10).Where("IsMale", true);
+
+        // Act
+        _sut.Compile(query);
+
+        // Assert
+        _parameterFixer.Received(1).FormatParameter(0);
+        _parameterFixer.Received(1).FormatParameter(1);
+    }
+
+    [Fact]
+    public void Compile_ShouldProduceDoubleSpace_WhenOperatorIsNull()
+    {
+        // Arrange
+        var query = new Query().Where("Age", null!, 10);
+
+        // Act
+        var result = _sut.Compile(query);
+
+        // Assert
+        result.Should().Be("WHERE Age  0");
+    }
+
+    [Fact]
+    public void Compile_ShouldNotTouchParameterFixer_WhenNoWhereEntriesExist()
+    {
+        // Arrange
+        var query = new Query();
+
+        // Act
+        _sut.Compile(query);
+
+        // Assert
+        _parameterFixer.DidNotReceive().FormatParameter(Arg.Any<int>());
+    }
+}
