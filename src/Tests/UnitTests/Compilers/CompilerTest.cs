@@ -118,6 +118,8 @@ public class CompilerTest
     [Fact]
     public void Compile_ShouldThrowArgumentNullException_WhenParameterFixerIsNull()
     {
+        // Arrange
+
         // Act
         var act = () => new Compiler(null!, _factory, _validator);
 
@@ -128,6 +130,8 @@ public class CompilerTest
     [Fact]
     public void Compile_ShouldThrowArgumentNullException_WhenValidatorIsNull()
     {
+        // Arrange
+
         // Act
         var act = () => new Compiler(_parameterFixer, _factory, null!);
 
@@ -151,6 +155,8 @@ public class CompilerTest
     [Fact]
     public void Compile_ShouldThrowNullReferenceException_WhenFactoryIsNull()
     {
+        // Arrange
+
         // Act
         var act = () => new Compiler(_parameterFixer, null!, _validator);
 
@@ -241,6 +247,8 @@ public class CompilerTest
     [Fact]
     public void Compile_ShouldThrowArgumentNullException_WhenQueryIsNull()
     {
+        // Arrange
+
         // Act
         var act = () => _sut.Compile(null!);
 

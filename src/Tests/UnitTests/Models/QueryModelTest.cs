@@ -25,6 +25,8 @@ public class QueryModelTest
     [Fact]
     public void Select_ShouldOverrideColumns_WhenSelectIsCalledTwice()
     {
+        // Arrange
+
         // Act
         var query = new Query().Select("FirstName", "LastName", "Age").Select("Grade");
 
@@ -65,6 +67,8 @@ public class QueryModelTest
     [Fact]
     public void Where_ShouldAccumulateClausesInOrder_WhenWhereIsCalledMultipleTimes()
     {
+        // Arrange
+
         // Act
         var query = new Query()
             .Where("c1", 10)
@@ -84,6 +88,8 @@ public class QueryModelTest
     [Fact]
     public void From_ShouldOverrideFromTable_WhenFromIsCalledTwice()
     {
+        // Arrange
+
         // Act
         var query = new Query().From("FirstName").From("LastName");
 
@@ -95,6 +101,8 @@ public class QueryModelTest
     public void Query_ShouldHaveEmptyState_WhenIsNew()
     {
         // Arrange
+
+        // Act
         var query = new Query();
 
         // Assert
@@ -112,6 +120,8 @@ public class QueryModelTest
     [InlineData("!=")]
     public void Where_ShouldStoreOperatorVerbatim_WhenCustomOperatorIsUsed(string op)
     {
+        // Arrange
+
         // Act
         var query = new Query().Where("Age", op, 10);
 
@@ -122,6 +132,8 @@ public class QueryModelTest
     [Fact]
     public void Where_ShouldDefaultToEqualsOperator_WhenWhereIsCalledWithTwoArgs()
     {
+        // Arrange
+
         // Act
         var query = new Query().Where("Age", 10);
 
@@ -132,6 +144,8 @@ public class QueryModelTest
     [Fact]
     public void Where_ShouldAccumulateBothEntries_WhenWhereIsCalledTwiceOnSameColumn()
     {
+        // Arrange
+
         // Act
         var query = new Query().Where("Age", 10).Where("Age", 20);
 
@@ -144,6 +158,8 @@ public class QueryModelTest
     [Fact]
     public void Where_ShouldKeepBothColumns_WhenSelectHasDuplicateColumns()
     {
+        // Arrange
+
         // Act
         var query = new Query().Select("A", "A");
 
@@ -223,6 +239,8 @@ public class QueryModelTest
     [Fact]
     public void Where_ShouldAcceptOperatorUnvalidated_WhenOperatorIsNull()
     {
+        // Arrange
+
         // Act
         var query = new Query().Where("Age", null!, 10);
 
@@ -233,6 +251,8 @@ public class QueryModelTest
     [Fact]
     public void Where_ShouldAcceptOperatorUnvalidated_WhenOperatorIsEmpty()
     {
+        // Arrange
+
         // Act
         var query = new Query().Where("Age", "", 10);
 
@@ -243,6 +263,8 @@ public class QueryModelTest
     [Fact]
     public void Where_ShouldAcceptValueUnvalidated_WhenValueIsNull()
     {
+        // Arrange
+
         // Act
         var query = new Query().Where("Age", null!);
 

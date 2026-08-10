@@ -15,6 +15,8 @@ public class PostgresClauseCompilerFactoryTest
     [Fact]
     public void CreateClauses_ShouldProduceSelectFromWhereInOrder_WhenUsingPostgresFactory()
     {
+        // Arrange
+
         // Act
         var result = _sut.CreateClauses().ToList();
 
@@ -28,6 +30,8 @@ public class PostgresClauseCompilerFactoryTest
     [Fact]
     public void CreateClauses_ShouldProduceFreshInstances_WhenCreateClausesIsCalledTwice()
     {
+        // Arrange
+
         // Act
         var first = _sut.CreateClauses().ToList();
         var second = _sut.CreateClauses().ToList();

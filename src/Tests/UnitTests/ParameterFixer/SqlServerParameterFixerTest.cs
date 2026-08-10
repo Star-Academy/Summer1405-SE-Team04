@@ -11,6 +11,8 @@ public class SqlServerParameterFixerTest
     [InlineData("Student", "[Student]")]
     public void WrapIdentifier_ShouldWrapInBrackets_WhenIdentifierIsSimple(string identifier, string expected)
     {
+        // Arrange
+
         // Act
         var result = _sut.WrapIdentifier(identifier);
 
@@ -21,6 +23,8 @@ public class SqlServerParameterFixerTest
     [Fact]
     public void WrapIdentifier_ShouldWrapEmptyValue_WhenIdentifierIsEmpty()
     {
+        // Arrange
+
         // Act
         var result = _sut.WrapIdentifier("");
 
@@ -31,6 +35,8 @@ public class SqlServerParameterFixerTest
     [Fact]
     public void WrapIdentifier_ShouldNotEscapeEmbeddedBracket_WhenIdentifierContainsClosingBracket()
     {
+        // Arrange
+
         // Act
         var result = _sut.WrapIdentifier("a]b");
 
@@ -41,6 +47,8 @@ public class SqlServerParameterFixerTest
     [Fact]
     public void WrapIdentifier_ShouldPassPayloadThrough_WhenIdentifierContainsSqlInjectionPayload()
     {
+        // Arrange
+
         // Act
         var result = _sut.WrapIdentifier("x]; DROP TABLE y--");
 
@@ -51,6 +59,8 @@ public class SqlServerParameterFixerTest
     [Fact]
     public void WrapIdentifier_ShouldThrowArgumentNullException_WhenIdentifierIsNull()
     {
+        // Arrange
+
         // Act
         var act = () => _sut.WrapIdentifier(null!);
 
@@ -64,6 +74,8 @@ public class SqlServerParameterFixerTest
     [InlineData(42, "@p42")]
     public void FormatParameter_ShouldProduceIndexedPlaceholder_WhenIndexIsNonNegative(int index, string expected)
     {
+        // Arrange
+
         // Act
         var result = _sut.FormatParameter(index);
 
@@ -74,6 +86,8 @@ public class SqlServerParameterFixerTest
     [Fact]
     public void FormatParameter_ShouldProduceInvalidPlaceholder_WhenIndexIsNegative()
     {
+        // Arrange
+
         // Act
         var result = _sut.FormatParameter(-1);
 
@@ -84,7 +98,13 @@ public class SqlServerParameterFixerTest
     [Fact]
     public void Instance_ShouldReturnSameSingleton_WhenAccessedTwice()
     {
-        // Act & Assert
-        SqlServerParameterFixer.Instance.Should().BeSameAs(SqlServerParameterFixer.Instance);
+        // Arrange
+
+        // Act
+        var first = SqlServerParameterFixer.Instance;
+        var second = SqlServerParameterFixer.Instance;
+
+        // Assert
+        first.Should().BeSameAs(second);
     }
 }

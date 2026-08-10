@@ -15,6 +15,8 @@ public class SqlValidatorTest
     [Fact]
     public void ValidateParams_ShouldReturnTrue_WhenParamsContainItems()
     {
+        // Arrange
+
         // Act
         var result = _sut.ValidateParams([1, "a"]);
 
@@ -25,6 +27,8 @@ public class SqlValidatorTest
     [Fact]
     public void ValidateParams_ShouldReturnFalse_WhenParamsArrayIsEmpty()
     {
+        // Arrange
+
         // Act
         var result = _sut.ValidateParams([]);
 
@@ -35,6 +39,8 @@ public class SqlValidatorTest
     [Fact]
     public void ValidateParams_ShouldReturnTrue_WhenParamsContainNullElement()
     {
+        // Arrange
+
         // Act
         var result = _sut.ValidateParams([null!]);
 
@@ -48,6 +54,8 @@ public class SqlValidatorTest
     [InlineData("a", "b", "c")]
     public void ValidateStringsNotEmpty_ShouldReturnTrue_WhenAllStringsAreValidNames(params string[] inputs)
     {
+        // Arrange
+
         // Act
         var result = _sut.ValidateStringsNotEmpty(inputs);
 
@@ -58,6 +66,8 @@ public class SqlValidatorTest
     [Fact]
     public void ValidateStringsNotEmpty_ShouldReturnFalse_WhenNoArgsAreProvided()
     {
+        // Arrange
+
         // Act
         var result = _sut.ValidateStringsNotEmpty();
 
@@ -73,6 +83,8 @@ public class SqlValidatorTest
     [InlineData("   ")]
     public void ValidateStringsNotEmpty_ShouldReturnFalse_WhenValueIsBlank(string input)
     {
+        // Arrange
+
         // Act
         var result = _sut.ValidateStringsNotEmpty(input);
 
@@ -83,6 +95,8 @@ public class SqlValidatorTest
     [Fact]
     public void ValidateStringsNotEmpty_ShouldReturnFalse_WhenElementIsNull()
     {
+        // Arrange
+
         // Act
         var result = _sut.ValidateStringsNotEmpty([null!]);
 
@@ -96,6 +110,8 @@ public class SqlValidatorTest
     [InlineData("a", "\t", "b")]
     public void ValidateStringsNotEmpty_ShouldReturnFalse_WhenOneValueIsInvalidAmongValidOnes(params string[] inputs)
     {
+        // Arrange
+
         // Act
         var result = _sut.ValidateStringsNotEmpty(inputs);
 
@@ -106,6 +122,8 @@ public class SqlValidatorTest
     [Fact]
     public void ValidateStringsNotEmpty_ShouldThrowArgumentNullException_WhenArrayIsNull()
     {
+        // Arrange
+
         // Act
         var act = () => _sut.ValidateStringsNotEmpty(null!);
 
@@ -168,6 +186,8 @@ public class SqlValidatorTest
     [Fact]
     public void ValidateQuery_ShouldThrowArgumentNullException_WhenQueryIsNull()
     {
+        // Arrange
+
         // Act
         var act = () => _sut.ValidateQuery(null!);
 
