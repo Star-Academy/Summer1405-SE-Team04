@@ -104,7 +104,7 @@ public class SqlServerTest : IClassFixture<SqlServerFixture>
     }
 
     [Fact]
-    public async Task Execute_ShouldPropagateException_WhenTableIsNotExist()
+    public async Task Execute_ShouldPropagateException_WhenTableDoesNotExist()
     {
         // Arrange
         var query = new Query().Select("FirstName").From("NoTable");

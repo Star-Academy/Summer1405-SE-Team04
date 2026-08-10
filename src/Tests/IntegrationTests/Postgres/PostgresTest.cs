@@ -105,7 +105,7 @@ public class PostgresIntegrationTest : IClassFixture<PostgresFixture>
         (await reader.ReadAsync()).Should().BeFalse();
     }
     [Fact]
-    public async Task Execute_ShouldPropagateException_WhenTableIsNotExist()
+    public async Task Execute_ShouldPropagateException_WhenTableDoesNotExist()
     {
         // Arrange
         var query = new Query().Select("FirstName").From("NoTable");
