@@ -12,7 +12,14 @@ public class StudentController(IStudentService studentService) : ControllerBase
     [HttpGet]
     public ActionResult<IEnumerable<Student>> List([FromQuery] string dbName)
     {
-        return studentService.ListStudents(dbName).ToList();
+        try
+        {
+            return studentService.ListStudents(dbName).ToList();
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpGet("{studentNumber}")]
@@ -73,5 +80,4 @@ public class StudentController(IStudentService studentService) : ControllerBase
             return BadRequest(e.Message);
         }
     }
-
 }
