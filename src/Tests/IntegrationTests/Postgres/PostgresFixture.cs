@@ -58,7 +58,7 @@ public class PostgresFixture : IAsyncLifetime
         {
             await using var command = new NpgsqlCommand(queryString, connection);
 
-            command.Parameters.AddWithValue(student.ID);
+            command.Parameters.AddWithValue(student.Id);
             command.Parameters.AddWithValue(student.FirstName);
             command.Parameters.AddWithValue(student.IsMale);
             command.Parameters.AddWithValue(student.Age);

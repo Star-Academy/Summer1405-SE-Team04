@@ -54,7 +54,7 @@ public class SqlServerFixture : IAsyncLifetime
         foreach (var student in TestData.Students)
         {
             await using var command = new SqlCommand(queryString, connection);
-            command.Parameters.AddWithValue("@p0", student.ID);
+            command.Parameters.AddWithValue("@p0", student.Id);
             command.Parameters.AddWithValue("@p1", student.FirstName);
             command.Parameters.AddWithValue("@p2", student.IsMale);
             command.Parameters.AddWithValue("@p3", student.Age);

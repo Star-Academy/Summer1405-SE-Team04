@@ -28,10 +28,19 @@ public class SqlServerTest : IClassFixture<SqlServerFixture>
         _sqlServerFixture.MsContainer.GetConnectionString());
     }
 
+    private static Student _getStudentFromReader(DbDataReader reader)
+    {
+        var id = reader.GetInt32(0);
+        var firstName = reader.GetString(1);
+        var isMale = reader.GetBoolean(2);
+        var age = reader.GetInt32(3);
+        return new Student(id, firstName, isMale, age);
+    }
+    
     [Fact]
     public async Task Execute_ShouldReturnAll_WhenSelectAllRows()
     {
-        //Arrange
+        // Arrange
         var query = new Query().Select("ID", "FirstName", "IsMale", "Age").From("Student");
 
 
@@ -39,16 +48,13 @@ public class SqlServerTest : IClassFixture<SqlServerFixture>
         await using var reader = await _sut.ExecuteQuery(query);
 
         //Assert
-        for (int i = 0; i < TestData.Students.Count; i++)
+        foreach (var expectedStudent in TestData.Students)
         {
-            var expected = TestData.Students[i];
-
             (await reader.ReadAsync()).Should().BeTrue();
-
-            reader.GetInt32(0).Should().Be(expected.ID);
-            reader.GetString(1).Should().Be(expected.FirstName);
-            reader.GetBoolean(2).Should().Be(expected.IsMale);
-            reader.GetInt32(3).Should().Be(expected.Age);
+            
+            var actualStudent = _getStudentFromReader(reader);
+            actualStudent.Should().BeEquivalentTo(expectedStudent);
+            
         }
 
         (await reader.ReadAsync()).Should().BeFalse();
@@ -64,14 +70,15 @@ public class SqlServerTest : IClassFixture<SqlServerFixture>
         await using var reader = await _sut.ExecuteQuery(query);
 
         //Assert
-        (await reader.ReadAsync()).Should().BeTrue();
+        (await reader.ReadAsync(TestContext.Current.CancellationToken)).Should().BeTrue();
 
-        reader.GetInt32(0).Should().Be(1);
-        reader.GetString(1).Should().Be("Ali");
-        reader.GetBoolean(2).Should().Be(true);
-        reader.GetInt32(3).Should().Be(19);
+        var actualStudent = _getStudentFromReader(reader);
+        var expectedStudent = TestData.Students[0];
+        
+        actualStudent.Should().BeEquivalentTo(expectedStudent);
+        
 
-        (await reader.ReadAsync()).Should().BeFalse();
+        (await reader.ReadAsync(TestContext.Current.CancellationToken)).Should().BeFalse();
     }
     [Fact]
     public async Task Execute_ShouldReturnSara_WhenWhereAgeIsBiggerThan30()
@@ -83,11 +90,11 @@ public class SqlServerTest : IClassFixture<SqlServerFixture>
         await using var reader = await _sut.ExecuteQuery(query);
 
         //Assert
-        (await reader.ReadAsync()).Should().BeTrue();
+        (await reader.ReadAsync(TestContext.Current.CancellationToken)).Should().BeTrue();
 
         reader.GetInt32(0).Should().Be(3);
 
-        (await reader.ReadAsync()).Should().BeFalse();
+        (await reader.ReadAsync(TestContext.Current.CancellationToken)).Should().BeFalse();
     }
 
     [Fact]
@@ -100,7 +107,7 @@ public class SqlServerTest : IClassFixture<SqlServerFixture>
         await using var reader = await _sut.ExecuteQuery(query);
 
         //Assert
-        (await reader.ReadAsync()).Should().BeFalse();
+        (await reader.ReadAsync(TestContext.Current.CancellationToken)).Should().BeFalse();
     }
 
     [Fact]
