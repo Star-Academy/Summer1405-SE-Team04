@@ -2,23 +2,23 @@ using QueryBuilder.Compilers.ClauseCompilers;
 using QueryBuilder.Models;
 using QueryBuilder.ParameterFixer;
 
-namespace UnitTests;
+namespace UnitTests.Compilers.ClauseCompilers;
 
 public class SelectClauseCompilerTest
 {
-    private readonly IParameterFixer _parameterFixerMock;
+    private readonly IParameterFixer _parameterFixer;
     private readonly SelectClauseCompiler _sut;
 
     public SelectClauseCompilerTest()
     {
-        _parameterFixerMock = Substitute.For<IParameterFixer>();
-        _parameterFixerMock.WrapIdentifier(Arg.Any<string>()).Returns(x => x.Arg<string>());
+        _parameterFixer = Substitute.For<IParameterFixer>();
+        _parameterFixer.WrapIdentifier(Arg.Any<string>()).Returns(x => x.Arg<string>());
 
-        _sut = new SelectClauseCompiler(_parameterFixerMock);
+        _sut = new SelectClauseCompiler(_parameterFixer);
     }
 
     [Fact]
-    public void Compile_Should_ProduceSelectWithoutLeadingSpace_When_SelectingSingleColumn()
+    public void Compile_ShouldProduceSelectWithoutLeadingSpace_WhenSelectingSingleColumn()
     {
         // Arrange
         var query = new Query().Select("A");
@@ -31,7 +31,7 @@ public class SelectClauseCompilerTest
     }
 
     [Fact]
-    public void Compile_Should_JoinColumnsWithCommaSpace_When_SelectingMultipleColumns()
+    public void Compile_ShouldJoinColumnsWithCommaSpace_WhenSelectingMultipleColumns()
     {
         // Arrange
         var query = new Query().Select("A", "B", "C");
@@ -44,7 +44,7 @@ public class SelectClauseCompilerTest
     }
 
     [Fact]
-    public void Compile_Should_ProduceSelectWithTrailingSpace_When_NoColumnsAreSelected()
+    public void Compile_ShouldProduceSelectWithTrailingSpace_WhenNoColumnsAreSelected()
     {
         // Arrange
         var query = new Query();
@@ -57,7 +57,7 @@ public class SelectClauseCompilerTest
     }
 
     [Fact]
-    public void Compile_Should_WrapEveryColumnIdentifier_When_Compiling()
+    public void Compile_ShouldWrapEveryColumnIdentifier_WhenCompiling()
     {
         // Arrange
         var query = new Query().Select("A", "B");
@@ -66,12 +66,12 @@ public class SelectClauseCompilerTest
         _sut.Compile(query);
 
         // Assert
-        _parameterFixerMock.Received(1).WrapIdentifier("A");
-        _parameterFixerMock.Received(1).WrapIdentifier("B");
+        _parameterFixer.Received(1).WrapIdentifier("A");
+        _parameterFixer.Received(1).WrapIdentifier("B");
     }
 
     [Fact]
-    public void Compile_Should_EmitBothColumns_When_ColumnsAreDuplicated()
+    public void Compile_ShouldEmitBothColumns_WhenColumnsAreDuplicated()
     {
         // Arrange
         var query = new Query().Select("A", "A");

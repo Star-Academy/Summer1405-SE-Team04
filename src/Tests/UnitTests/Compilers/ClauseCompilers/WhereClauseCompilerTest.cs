@@ -2,24 +2,24 @@ using QueryBuilder.Compilers.ClauseCompilers;
 using QueryBuilder.Models;
 using QueryBuilder.ParameterFixer;
 
-namespace UnitTests;
+namespace UnitTests.Compilers.ClauseCompilers;
 
 public class WhereClauseCompilerTest
 {
-    private readonly IParameterFixer _parameterFixerMock;
+    private readonly IParameterFixer _parameterFixer;
     private readonly WhereClauseCompiler _sut;
 
     public WhereClauseCompilerTest()
     {
-        _parameterFixerMock = Substitute.For<IParameterFixer>();
-        _parameterFixerMock.WrapIdentifier(Arg.Any<string>()).Returns(x => x.Arg<string>());
-        _parameterFixerMock.FormatParameter(Arg.Any<int>()).Returns(x => x.Arg<int>().ToString());
+        _parameterFixer = Substitute.For<IParameterFixer>();
+        _parameterFixer.WrapIdentifier(Arg.Any<string>()).Returns(x => x.Arg<string>());
+        _parameterFixer.FormatParameter(Arg.Any<int>()).Returns(x => x.Arg<int>().ToString());
 
-        _sut = new WhereClauseCompiler(_parameterFixerMock);
+        _sut = new WhereClauseCompiler(_parameterFixer);
     }
 
     [Fact]
-    public void Compile_Should_ProduceEmptyString_When_NoWhereEntriesExist()
+    public void Compile_ShouldProduceEmptyString_WhenNoWhereEntriesExist()
     {
         // Arrange
         var query = new Query();
@@ -32,7 +32,7 @@ public class WhereClauseCompilerTest
     }
 
     [Fact]
-    public void Compile_Should_ProduceWhereWithLeadingSpace_When_SingleEntryExists()
+    public void Compile_ShouldProduceWhereWithLeadingSpace_WhenSingleEntryExists()
     {
         // Arrange
         var query = new Query().Where("Age", 10);
@@ -45,7 +45,7 @@ public class WhereClauseCompilerTest
     }
 
     [Fact]
-    public void Compile_Should_JoinEntriesWithAnd_When_MultipleEntriesExist()
+    public void Compile_ShouldJoinEntriesWithAnd_WhenMultipleEntriesExist()
     {
         // Arrange
         var query = new Query().Where("Age", 10).Where("IsMale", true);
@@ -63,7 +63,7 @@ public class WhereClauseCompilerTest
     [InlineData("LIKE")]
     [InlineData("!=")]
     [InlineData("IS NOT")]
-    public void Compile_Should_EmitOperatorVerbatim_When_CustomOperatorIsUsed(string op)
+    public void Compile_ShouldEmitOperatorVerbatim_WhenCustomOperatorIsUsed(string op)
     {
         // Arrange
         var query = new Query().Where("Age", op, 10);
@@ -76,7 +76,7 @@ public class WhereClauseCompilerTest
     }
 
     [Fact]
-    public void Compile_Should_FormatParameterPerEntryIndex_When_Compiling()
+    public void Compile_ShouldFormatParameterPerEntryIndex_WhenCompiling()
     {
         // Arrange
         var query = new Query().Where("Age", 10).Where("IsMale", true);
@@ -85,12 +85,12 @@ public class WhereClauseCompilerTest
         _sut.Compile(query);
 
         // Assert
-        _parameterFixerMock.Received(1).FormatParameter(0);
-        _parameterFixerMock.Received(1).FormatParameter(1);
+        _parameterFixer.Received(1).FormatParameter(0);
+        _parameterFixer.Received(1).FormatParameter(1);
     }
 
     [Fact]
-    public void Compile_Should_ProduceDoubleSpace_When_OperatorIsNull()
+    public void Compile_ShouldProduceDoubleSpace_WhenOperatorIsNull()
     {
         // Arrange
         var query = new Query().Where("Age", null!, 10);
@@ -103,7 +103,7 @@ public class WhereClauseCompilerTest
     }
 
     [Fact]
-    public void Compile_Should_NotTouchParameterFixer_When_NoWhereEntriesExist()
+    public void Compile_ShouldNotTouchParameterFixer_WhenNoWhereEntriesExist()
     {
         // Arrange
         var query = new Query();
@@ -112,6 +112,6 @@ public class WhereClauseCompilerTest
         _sut.Compile(query);
 
         // Assert
-        _parameterFixerMock.DidNotReceive().FormatParameter(Arg.Any<int>());
+        _parameterFixer.DidNotReceive().FormatParameter(Arg.Any<int>());
     }
 }

@@ -2,23 +2,23 @@ using QueryBuilder.Compilers.ClauseCompilers;
 using QueryBuilder.Models;
 using QueryBuilder.ParameterFixer;
 
-namespace UnitTests;
+namespace UnitTests.Compilers.ClauseCompilers;
 
 public class FromClauseCompilerTest
 {
-    private readonly IParameterFixer _parameterFixerMock;
+    private readonly IParameterFixer _parameterFixer;
     private readonly FromClauseCompiler _sut;
 
     public FromClauseCompilerTest()
     {
-        _parameterFixerMock = Substitute.For<IParameterFixer>();
-        _parameterFixerMock.WrapIdentifier(Arg.Any<string>()).Returns(x => x.Arg<string>());
+        _parameterFixer = Substitute.For<IParameterFixer>();
+        _parameterFixer.WrapIdentifier(Arg.Any<string>()).Returns(x => x.Arg<string>());
 
-        _sut = new FromClauseCompiler(_parameterFixerMock);
+        _sut = new FromClauseCompiler(_parameterFixer);
     }
 
     [Fact]
-    public void Compile_Should_ProduceFromWithLeadingSpace_When_TableIsSpecified()
+    public void Compile_ShouldProduceFromWithLeadingSpace_WhenTableIsSpecified()
     {
         // Arrange
         var query = new Query().From("Student");
@@ -31,7 +31,7 @@ public class FromClauseCompilerTest
     }
 
     [Fact]
-    public void Compile_Should_WrapTableIdentifier_When_Compiling()
+    public void Compile_ShouldWrapTableIdentifier_WhenCompiling()
     {
         // Arrange
         var query = new Query().From("Student");
@@ -40,6 +40,6 @@ public class FromClauseCompilerTest
         _sut.Compile(query);
 
         // Assert
-        _parameterFixerMock.Received(1).WrapIdentifier("Student");
+        _parameterFixer.Received(1).WrapIdentifier("Student");
     }
 }
