@@ -1,3 +1,4 @@
+using System.Data;
 using Microsoft.Data.SqlClient;
 using Testcontainers.MsSql;
 
@@ -29,11 +30,11 @@ public class SqlServerFixture : IAsyncLifetime
         await connection.OpenAsync();
 
         var queryString = """
-        CREATE TABLE [Student](
-            [ID]            int PRIMARY KEY,
-            [FirstName]     nvarchar(20),
-            [IsMale]        bit,
-            [Age]           int
+        CREATE TABLE "Student"(
+            "ID"            int PRIMARY KEY,
+            "FirstName"     varchar(20) NOT NULL,
+            "IsMale"      BIT NOT NULL,
+            "Age"         int
         );
         """;
 
@@ -57,7 +58,7 @@ public class SqlServerFixture : IAsyncLifetime
             command.Parameters.AddWithValue("@p0", student.Id);
             command.Parameters.AddWithValue("@p1", student.FirstName);
             command.Parameters.AddWithValue("@p2", student.IsMale);
-            command.Parameters.AddWithValue("@p3", student.Age);
+            command.Parameters.Add("@p3", SqlDbType.Int).Value = (object?)student.Age ?? DBNull.Value;
 
             await command.ExecuteNonQueryAsync();
         }

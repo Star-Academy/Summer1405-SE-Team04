@@ -34,11 +34,11 @@ public class PostgresIntegrationTest : IClassFixture<PostgresFixture>
         var id = reader.GetInt32(0);
         var firstName = reader.GetString(1);
         var isMale = reader.GetBoolean(2);
-        var age = reader.GetInt32(3);
+        var age = reader.IsDBNull(3) ? (int?)null : reader.GetInt32(3);
         return new Student(id, firstName, isMale, age);
     }
-    
-    
+
+
 
     [Fact]
     public async Task Execute_ShouldReturnAll_WhenSelectAllRows()
@@ -54,7 +54,7 @@ public class PostgresIntegrationTest : IClassFixture<PostgresFixture>
         foreach (var expectedStudent in TestData.Students)
         {
             (await reader.ReadAsync(TestContext.Current.CancellationToken)).Should().BeTrue();
-            
+
             var actualStudent = _getStudentFromReader(reader);
             actualStudent.Should().BeEquivalentTo(expectedStudent);
         }
@@ -76,9 +76,9 @@ public class PostgresIntegrationTest : IClassFixture<PostgresFixture>
 
         var expectedStudent = TestData.Students[0];
         var actualStudent = _getStudentFromReader(reader);
-            
+
         actualStudent.Should().BeEquivalentTo(expectedStudent);
-        
+
         (await reader.ReadAsync(TestContext.Current.CancellationToken)).Should().BeFalse();
     }
 
@@ -122,6 +122,153 @@ public class PostgresIntegrationTest : IClassFixture<PostgresFixture>
         Func<Task> act = () => _sut.ExecuteQuery(query);
 
         // Assert
+        await act.Should().ThrowAsync<DbException>();
+    }
+
+
+
+    [Fact]
+    public async Task Execute_ShouldReturnCorrectStudents_WhenMultipleWhereConditionsGiven()
+    {
+        //Arrange
+        var query = new Query()
+            .Select("ID", "FirstName", "IsMale", "Age")
+            .From("Student")
+            .Where("IsMale", true)
+            .Where("Age", ">", 15);
+
+        //Act
+        await using var reader = await _sut.ExecuteQuery(query);
+
+        //Assert
+        foreach (var expectedStudent in TestData.Students.Where(s => s.IsMale && s.Age > 15))
+        {
+            (await reader.ReadAsync(TestContext.Current.CancellationToken)).Should().BeTrue();
+
+            var actualStudent = _getStudentFromReader(reader);
+
+            actualStudent.Should().BeEquivalentTo(expectedStudent);
+        }
+
+        (await reader.ReadAsync(TestContext.Current.CancellationToken)).Should().BeFalse();
+    }
+
+
+    [Fact]
+    public async Task Execute_ShouldThrowArgumentNullException_WhenFromIsNotGiven()
+    {
+        //Arrange
+        var query = new Query()
+            .Select("ID", "FirstName");
+
+        //Act
+        Func<Task> act = () => _sut.ExecuteQuery(query);
+
+        //Assert
+        await act.Should().ThrowAsync<InvalidOperationException>();
+    }
+
+    [Fact]
+    public async Task Execute_ShouldDoesntReturnFarhad_WhenWhereOnAge()
+    {
+        //Arrange
+        var query = new Query()
+            .Select("ID", "FirstName", "IsMale", "Age")
+            .From("Student")
+            .Where("Age", ">", 15);
+
+        //Act
+        await using var reader = await _sut.ExecuteQuery(query);
+
+        //Assert
+        foreach (var expectedStudent in TestData.Students.Where(s => s.Age > 15))
+        {
+            (await reader.ReadAsync(TestContext.Current.CancellationToken)).Should().BeTrue();
+
+            var actualStudent = _getStudentFromReader(reader);
+
+            actualStudent.Should().BeEquivalentTo(expectedStudent);
+        }
+
+        (await reader.ReadAsync(TestContext.Current.CancellationToken)).Should().BeFalse();
+    }
+    [Fact]
+    public async Task Execute_ShouldThrowArgumentException_WhenFromIsEmpty()
+    {
+        //Arrange
+        var query = new Query()
+            .Select("ID", "FirstName");
+
+        //Act
+        var act = () => query.From("");
+
+        //Assert
+        act.Should().Throw<ArgumentException>();
+    }
+
+
+    [Fact]
+    public async Task Execute_ShouldReturnStudentsYoungerThan20_WhenWhereAgeIsSmallerThan20()
+    {
+        //Arrange
+        var query = new Query()
+            .Select("ID", "FirstName", "IsMale", "Age")
+            .From("Student")
+            .Where("Age", "<", 20);
+
+        //Act
+        await using var reader = await _sut.ExecuteQuery(query);
+
+        //Assert
+        foreach (var expectedStudent in TestData.Students.Where(s => s.Age < 20))
+        {
+            (await reader.ReadAsync(TestContext.Current.CancellationToken)).Should().BeTrue();
+
+            var actualStudent = _getStudentFromReader(reader);
+
+            actualStudent.Should().BeEquivalentTo(expectedStudent);
+        }
+
+        (await reader.ReadAsync(TestContext.Current.CancellationToken)).Should().BeFalse();
+    }
+
+
+    [Fact]
+    public async Task Execute_ShouldReturnStudents_WhenWhereFirstNameIsLike()
+    {
+        //Arrange
+        var query = new Query()
+            .Select("ID", "FirstName", "IsMale", "Age")
+            .From("Student")
+            .Where("FirstName", "LIKE", "Amir%");
+
+        //Act
+        await using var reader = await _sut.ExecuteQuery(query);
+
+        //Assert
+        while (await reader.ReadAsync(TestContext.Current.CancellationToken))
+        {
+            var actualStudent = _getStudentFromReader(reader);
+
+            actualStudent.FirstName.Should().Contain("Amirali");
+
+        }
+    }
+
+
+    [Fact]
+    public async Task Execute_ShouldThrowDbException_WhenInvalidWhereOperatorIsGiven()
+    {
+        //Arrange
+        var query = new Query()
+            .Select("ID", "FirstName")
+            .From("Student")
+            .Where("Age", "^", 20);
+
+        //Act
+        Func<Task> act = () => _sut.ExecuteQuery(query);
+
+        //Assert
         await act.Should().ThrowAsync<DbException>();
     }
 }

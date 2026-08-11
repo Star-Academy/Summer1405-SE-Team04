@@ -33,8 +33,8 @@ public class PostgresFixture : IAsyncLifetime
         var queryString = """
         CREATE TABLE "Student"(
             "ID"            int PRIMARY KEY,
-            "FirstName"     varchar(20),
-            "IsMale"      BOOL,
+            "FirstName"     varchar(20) NOT NULL,
+            "IsMale"      BOOL NOT NULL,
             "Age"         int
         );
         """;
@@ -61,7 +61,7 @@ public class PostgresFixture : IAsyncLifetime
             command.Parameters.AddWithValue(student.Id);
             command.Parameters.AddWithValue(student.FirstName);
             command.Parameters.AddWithValue(student.IsMale);
-            command.Parameters.AddWithValue(student.Age);
+            command.Parameters.AddWithValue(NpgsqlTypes.NpgsqlDbType.Integer, (object?)student.Age ?? DBNull.Value);
 
             await command.ExecuteNonQueryAsync();
         }
