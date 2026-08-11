@@ -1,3 +1,4 @@
+using AwesomeAssertions;
 using QueryBuilder.Compilers;
 using QueryBuilder.Factory;
 using QueryBuilder.Models;
