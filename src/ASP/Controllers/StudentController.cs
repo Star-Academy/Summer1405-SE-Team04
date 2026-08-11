@@ -68,6 +68,10 @@ public class StudentController(IStudentService studentService) : ControllerBase
         {
             return NotFound(e.Message);
         }
+        catch (NotAllowedException e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 
 }

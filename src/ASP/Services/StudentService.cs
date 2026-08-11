@@ -17,6 +17,8 @@ public class StudentService(IQueryFactoryProvider queryFactoryProvider) : IStude
     public void DeleteStudent(string dbName, string studentNumber)
     {
         var db = queryFactoryProvider.GetQueryFactory(dbName);
+        if (!db.Query("Student").Where("StudentNumber", studentNumber).Exists())
+            throw new NotFoundException("The Student doesn't exist!");
         db.Query("Student").Where("StudentNumber", studentNumber).Delete();
     }
 
@@ -42,6 +44,9 @@ public class StudentService(IQueryFactoryProvider queryFactoryProvider) : IStude
     public void UpdateStudent(string dbName, string studentNumber, Student student)
     {
         var db = queryFactoryProvider.GetQueryFactory(dbName);
+        
+        if (student.StudentNumber != studentNumber)
+            throw new NotAllowedException("you can't change the student number!");
         if (!db.Query("Student").Where("StudentNumber", studentNumber).Exists())
             throw new NotFoundException("The Student doesn't exist!");
         db.Query("Student").Where("StudentNumber", studentNumber).Update(student);

@@ -6,6 +6,7 @@
     <Project Path="src/SqlApp/SqlApp.csproj" />
   </Folder>
   <Folder Name="/src/Tests/">
+    <Project Path="src/Tests/AspTests/AspTests.csproj" />
     <Project Path="src/Tests/UnitTests/UnitTests.csproj" />
   </Folder>
 </Solution>
