@@ -16,5 +16,8 @@
     <ItemGroup>
         <ProjectReference Include="..\QueryBuilder\QueryBuilder.csproj"/>
     </ItemGroup>
+    <ItemGroup>
+         <InternalsVisibleTo Include="ASP"/>
+    </ItemGroup>
 
 </Project>

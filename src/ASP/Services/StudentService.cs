@@ -1,0 +1,49 @@
+using SqlKata.Execution;
+using Models;
+using Exceptions;
+using Providers;
+namespace Services;
+
+public class StudentService(IQueryFactoryProvider queryFactoryProvider) : IStudentService
+{
+    public void CreateStudent(string dbName, Student student)
+    {
+        var db = queryFactoryProvider.GetQueryFactory(dbName);
+        if (db.Query().From("Student").Where("StudentNumber", student.StudentNumber).Exists())
+            throw new ConflictException("Student with this username already exists.");
+        db.Query("Student").Insert(student);
+    }
+
+    public void DeleteStudent(string dbName, string studentNumber)
+    {
+        var db = queryFactoryProvider.GetQueryFactory(dbName);
+        db.Query("Student").Where("StudentNumber", studentNumber).Delete();
+    }
+
+    public Student GetStudent(string dbName, string studentNumber)
+    {
+        var db = queryFactoryProvider.GetQueryFactory(dbName);
+        try
+        {
+            return db.Query("Student").Where("StudentNumber", studentNumber).Get<Student>().First();
+        }
+        catch (InvalidOperationException e)
+        {
+            throw new NotFoundException(e.Message);
+        }
+    }
+
+    public IEnumerable<Student> ListStudents(string dbName)
+    {
+        var db = queryFactoryProvider.GetQueryFactory(dbName);
+        return db.Query().Get<Student>();
+    }
+
+    public void UpdateStudent(string dbName, string studentNumber, Student student)
+    {
+        var db = queryFactoryProvider.GetQueryFactory(dbName);
+        if (!db.Query().From("Student").Where("StudentNumber", student.StudentNumber).Exists())
+            throw new NotFoundException("The Student doesn't exist!");
+        db.Query("Student").Where("StudentNumber").Update(student);
+    }
+}
