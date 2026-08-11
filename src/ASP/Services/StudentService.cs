@@ -25,14 +25,8 @@ public class StudentService(IQueryFactoryProvider queryFactoryProvider) : IStude
     public Student GetStudent(string dbName, string studentNumber)
     {
         var db = queryFactoryProvider.GetQueryFactory(dbName);
-        try
-        {
-            return db.Query("Student").Where("StudentNumber", studentNumber).Get<Student>().First();
-        }
-        catch (InvalidOperationException)
-        {
-            throw new NotFoundException("The Student doesn't exist!");
-        }
+        var student = db.Query("Student").Where("StudentNumber", studentNumber).FirstOrDefault();
+        return student ?? throw new NotFoundException("Student doesn't exist!");
     }
 
     public IEnumerable<Student> ListStudents(string dbName)
