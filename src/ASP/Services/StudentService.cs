@@ -27,23 +27,23 @@ public class StudentService(IQueryFactoryProvider queryFactoryProvider) : IStude
         {
             return db.Query("Student").Where("StudentNumber", studentNumber).Get<Student>().First();
         }
-        catch (InvalidOperationException e)
+        catch (InvalidOperationException)
         {
-            throw new NotFoundException(e.Message);
+            throw new NotFoundException("The Student doesn't exist!");
         }
     }
 
     public IEnumerable<Student> ListStudents(string dbName)
     {
         var db = queryFactoryProvider.GetQueryFactory(dbName);
-        return db.Query().Get<Student>();
+        return db.Query("Student").Get<Student>();
     }
 
     public void UpdateStudent(string dbName, string studentNumber, Student student)
     {
         var db = queryFactoryProvider.GetQueryFactory(dbName);
-        if (!db.Query().From("Student").Where("StudentNumber", student.StudentNumber).Exists())
+        if (!db.Query("Student").Where("StudentNumber", studentNumber).Exists())
             throw new NotFoundException("The Student doesn't exist!");
-        db.Query("Student").Where("StudentNumber").Update(student);
+        db.Query("Student").Where("StudentNumber", studentNumber).Update(student);
     }
 }

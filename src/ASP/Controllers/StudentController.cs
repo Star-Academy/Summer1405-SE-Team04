@@ -7,7 +7,7 @@ namespace Controllers;
 
 [ApiController]
 [Route("[controller]")]
-class StudentsController(IStudentService studentService) : ControllerBase
+public class StudentController(IStudentService studentService) : ControllerBase
 {
     [HttpGet]
     public ActionResult<IEnumerable<Student>> List([FromQuery] string dbName)
