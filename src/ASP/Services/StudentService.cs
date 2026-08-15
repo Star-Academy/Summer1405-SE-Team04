@@ -10,8 +10,8 @@ public class StudentService(IQueryFactoryProvider queryFactoryProvider) : IStude
     public void CreateStudent(string dbName, Student student)
     {
         var db = queryFactoryProvider.GetQueryFactory(dbName);
-        if (db.Query().From("Student").Where("StudentNumber", student.StudentNumber).Exists())
-            throw new ConflictException("Student with this username already exists.");
+        if (db.Query("Student").Where("StudentNumber", student.StudentNumber).Exists())
+            throw new ConflictException("Student with this StudentNumber already exists.");
         db.Query("Student").Insert(student);
     }
 
