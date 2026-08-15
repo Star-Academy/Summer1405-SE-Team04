@@ -68,7 +68,7 @@ public class StudentControllerTest
         _students.FirstOrDefault(s => s.StudentNumber == studentNumber);
 
     [Fact]
-    public void Controller_ShouldReturnAllStudents_WhenListCalled()
+    public void List_ShouldReturnAllStudents_WhenCalled()
     {
         // Arrange
 
@@ -81,7 +81,7 @@ public class StudentControllerTest
 
     [Theory]
     [MemberData(nameof(StudentFakes.IndividualStudentsData),  MemberType = typeof(StudentFakes))]
-    public void Controller_ShouldReturnCorrectStudent_WhenRetrieveCalled(Student queryStudent)
+    public void Retrieve_ShouldReturnCorrectStudent_WhenCalled(Student queryStudent)
     {
         // Arrange
         var expected = _students.FirstOrDefault(s => s.StudentNumber == queryStudent.StudentNumber);
@@ -94,7 +94,7 @@ public class StudentControllerTest
     }
 
     [Fact]
-    public void Controller_ShouldAddStudent_WhenCreateCalled()
+    public void Create_ShouldAddStudent_WhenCalled()
     {
         // Arrange
         var student = StudentFakes.CreateStudent();
@@ -108,7 +108,7 @@ public class StudentControllerTest
     }
 
     [Fact]
-    public void Controller_ShouldRemoveStudent_WhenDeleteCalled()
+    public void Delete_ShouldRemoveStudent_WhenCalled()
     {
         // Arrange
         var target = _students[1];
@@ -122,7 +122,7 @@ public class StudentControllerTest
     }
 
     [Fact]
-    public void Controller_ShouldUpdateStudent_WhenUpdateCalled()
+    public void Update_ShouldUpdateStudent_WhenCalled()
     {
         // Arrange
         var target = _students[0];
@@ -138,7 +138,7 @@ public class StudentControllerTest
     }
 
     [Fact]
-    public void Controller_ShouldReturnEmptyList_WhenNoStudentExists()
+    public void List_ShouldReturnEmptyList_WhenNoStudentExists()
     {
         // Arrange
         _students.Clear();
@@ -151,7 +151,7 @@ public class StudentControllerTest
     }
 
     [Fact]
-    public void Controller_ShouldReturnNotFound_WhenRetrieveCalledWithUnknownStudentNumber()
+    public void Retrieve_ShouldReturnNotFound_WhenCalledWithUnknownStudentNumber()
     {
         // Arrange
         const string unknownStudentNumber = "00000000";
@@ -164,7 +164,7 @@ public class StudentControllerTest
     }
 
     [Fact]
-    public void Controller_ShouldReturnNotFound_WhenDeleteCalledWithUnknownStudentNumber()
+    public void Delete_ShouldReturnNotFound_WhenCalledWithUnknownStudentNumber()
     {
         // Arrange
         const string unknownStudentNumber = "00000000";
@@ -177,7 +177,7 @@ public class StudentControllerTest
     }
 
     [Fact]
-    public void Controller_ShouldReturnNotFound_WhenUpdateCalledWithUnknownStudentNumber()
+    public void Update_ShouldReturnNotFound_WhenCalledWithUnknownStudentNumber()
     {
         // Arrange
         const string unknownStudentNumber = "00000000";
@@ -191,7 +191,7 @@ public class StudentControllerTest
     }
 
     [Fact]
-    public void Controller_ShouldReturnConflict_WhenCreateCalledWithExistingStudentNumber()
+    public void Create_ShouldReturnConflict_WhenCalledWithExistingStudentNumber()
     {
         // Arrange
         var duplicate = StudentFakes.CreateStudent(_students[0].StudentNumber);
@@ -205,7 +205,7 @@ public class StudentControllerTest
     }
 
     [Fact]
-    public void Controller_ShouldKeepStudentNumber_WhenUpdateCalledWithDifferentStudentNumber()
+    public void Update_ShouldReturnBadRequest_WhenCalledWithDifferentStudentNumber()
     {
         // Arrange
         var target = _students[0];
