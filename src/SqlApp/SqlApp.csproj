@@ -15,6 +15,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\QueryBuilder\QueryBuilder.csproj"/>
+        <InternalsVisibleTo Include="IntegrationTests"/>
     </ItemGroup>
 
 </Project>
