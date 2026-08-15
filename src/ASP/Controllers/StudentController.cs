@@ -33,6 +33,10 @@ public class StudentController(IStudentService studentService) : ControllerBase
         {
             return NotFound(e.Message);
         }
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpDelete("{studentNumber}")]
@@ -47,6 +51,10 @@ public class StudentController(IStudentService studentService) : ControllerBase
         {
             return NotFound(e.Message);
         }
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpPost]
@@ -60,6 +68,10 @@ public class StudentController(IStudentService studentService) : ControllerBase
         catch (ConflictException e)
         {
             return Conflict(e.Message);
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message);
         }
     }
 
@@ -76,6 +88,10 @@ public class StudentController(IStudentService studentService) : ControllerBase
             return NotFound(e.Message);
         }
         catch (NotAllowedException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (ArgumentException e)
         {
             return BadRequest(e.Message);
         }
