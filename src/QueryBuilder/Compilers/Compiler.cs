@@ -1,4 +1,3 @@
-using System.Text;
 using QueryBuilder.Compilers.ClauseCompilers;
 using QueryBuilder.Factory;
 using QueryBuilder.Models;
@@ -40,7 +39,7 @@ internal class Compiler : ICompiler
 
         if (!_validator.ValidateQuery(query))
             throw new InvalidOperationException("Query is not valid.");
-        
+
         var sqlQueryString = string.Join(" ", _clauseCompilers.Select(x => x.Compile(query)));
 
         return new SqlResult(sqlQueryString, bindings);
