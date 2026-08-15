@@ -4,7 +4,7 @@ using SqlApp;
 using SqlKata.Compilers;
 using SqlKata.Execution;
 
-namespace Providers;
+namespace ASP.Providers;
 
 public class QueryFactoryProvider : IQueryFactoryProvider
 {

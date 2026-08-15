@@ -1,4 +1,4 @@
-namespace Exceptions;
+namespace ASP.Exceptions;
 
 public class NotFoundException : Exception
 {

@@ -1,8 +1,9 @@
+using ASP.Exceptions;
+using ASP.Models;
+using ASP.Providers;
 using SqlKata.Execution;
-using Models;
-using Exceptions;
-using Providers;
-namespace Services;
+
+namespace ASP.Services;
 
 public class StudentService(IQueryFactoryProvider queryFactoryProvider) : IStudentService
 {

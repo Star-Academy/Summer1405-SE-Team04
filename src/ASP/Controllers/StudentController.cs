@@ -1,9 +1,9 @@
+using ASP.Exceptions;
+using ASP.Models;
+using ASP.Services;
 using Microsoft.AspNetCore.Mvc;
-using Services;
-using Models;
-using Exceptions;
 
-namespace Controllers;
+namespace ASP.Controllers;
 
 [ApiController]
 [Route("[controller]")]

@@ -1,6 +1,6 @@
 using SqlKata.Execution;
 
-namespace Providers;
+namespace ASP.Providers;
 
 public interface IQueryFactoryProvider : IDisposable
 {

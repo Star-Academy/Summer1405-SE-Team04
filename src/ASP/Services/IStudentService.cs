@@ -1,5 +1,6 @@
-using Models;
-namespace Services;
+using ASP.Models;
+
+namespace ASP.Services;
 
 public interface IStudentService
 {

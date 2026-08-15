@@ -1,4 +1,4 @@
-namespace Models;
+namespace ASP.Models;
 
 public class Student
 {
