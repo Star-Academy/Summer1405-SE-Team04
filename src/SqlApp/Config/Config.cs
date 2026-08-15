@@ -2,17 +2,17 @@ namespace SqlApp;
 
 internal class Config : Iconfig
 {
-    private readonly string MsDb = Environment.GetEnvironmentVariable("MS_DATABASE") ?? "mohaymen-sqlserver";
+    public string MsDb { get; } = Environment.GetEnvironmentVariable("MS_DATABASE") ?? "mohaymen-sqlserver";
 
-    private readonly string MsHost = Environment.GetEnvironmentVariable("MS_HOST") ?? "localhost";
-    private readonly string MsPass = Environment.GetEnvironmentVariable("MSSQL_SA_PASSWORD") ?? string.Empty;
-    private readonly string MsPort = Environment.GetEnvironmentVariable("MS_PORT") ?? "1433";
-    private readonly string MsServer;
-    private readonly string PgDb = Environment.GetEnvironmentVariable("POSTGRES_DB") ?? "team04";
-    private readonly string PgHost = Environment.GetEnvironmentVariable("PG_HOST") ?? "localhost";
-    private readonly string PgPass = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD") ?? string.Empty;
-    private readonly string PgPort = Environment.GetEnvironmentVariable("PG_PORT") ?? "5432";
-    private readonly string PgUser = Environment.GetEnvironmentVariable("POSTGRES_USER") ?? "mohaymen";
+    public string MsHost { get; } = Environment.GetEnvironmentVariable("MS_HOST") ?? "localhost";
+    public string MsPass { get; } = Environment.GetEnvironmentVariable("MSSQL_SA_PASSWORD") ?? string.Empty;
+    public string MsPort { get; } = Environment.GetEnvironmentVariable("MS_PORT") ?? "1433";
+    public string MsServer { get; }
+    public string PgDb { get; } = Environment.GetEnvironmentVariable("POSTGRES_DB") ?? "team04";
+    public string PgHost { get; } = Environment.GetEnvironmentVariable("PG_HOST") ?? "localhost";
+    public string PgPass { get; } = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD") ?? string.Empty;
+    public string PgPort { get; } = Environment.GetEnvironmentVariable("PG_PORT") ?? "5432";
+    public string PgUser { get; } = Environment.GetEnvironmentVariable("POSTGRES_USER") ?? "mohaymen";
 
     public Config()
     {
